@@ -201,6 +201,7 @@
               ;
 'name': 'Test and snapshot workflow'
 'on':
+  'workflow_dispatch': null
   'push':
     'tags':
       - 'v*'
