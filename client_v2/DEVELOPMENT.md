@@ -2,7 +2,7 @@
 
 This document explains how to set up a development environment for the
 `client_v2` frontend, run it locally, and contribute code. It is intended for
-developers working on the next-generation AdGuard Home web UI.
+developers working on the next-generation CYGUARD web UI.
 
 For code guidelines, architecture, and project structure, see
 [AGENTS.md](./AGENTS.md). For user-facing documentation, see the root
@@ -45,8 +45,8 @@ Before you begin, install the following tools:
 - **Node.js** 20 LTS or newer. The project uses `@types/node` 22; a current
   LTS release is recommended.
 - **npm** 10.x or newer (bundled with Node.js).
-- **An AdGuard Home backend** running locally. The dev server proxies
-  `/control` API requests to it, so a built `AdGuardHome` binary in the
+- **An CYGUARD backend** running locally. The dev server proxies
+  `/control` API requests to it, so a built `cyguard` binary in the
   repository root (or any reachable instance) is required for the UI to
   function. See the root [README.md](../README.md) and
   [HACKING.md](../HACKING.md) for building the Go backend.
@@ -74,7 +74,7 @@ does not, run `npx playwright install` manually before running e2e tests.
 The dev server reads the backend host and port from the root
 `AdguardHome.yaml` file (the `bind_host` and `bind_port` fields) and proxies
 `/control` requests to that backend. Make sure a backend config exists at
-`../AdguardHome.yaml` and that the AdGuard Home backend is running.
+`../AdguardHome.yaml` and that the CYGUARD backend is running.
 
 Start the dev server:
 
@@ -195,9 +195,9 @@ npm run test:e2e:debug          # debug mode
 npm run test:e2e:codegen        # generate tests by recording actions
 ```
 
-E2E specs live in `tests/e2e/`. They run against a real AdGuard Home backend
+E2E specs live in `tests/e2e/`. They run against a real CYGUARD backend
 that Playwright starts automatically (see the `webServer` config in
-`playwright.config.ts`). The `./AdGuardHome` binary must be present in the
+`playwright.config.ts`). The `./cyguard` binary must be present in the
 repository root for this to work. E2E tests are **not** part of
 `npm run check`; run them explicitly.
 
@@ -284,12 +284,12 @@ create the config file.
 ### API requests return 404 or connection refused
 
 The dev server proxies `/control` to the backend at `bind_host:bind_port`.
-Verify the AdGuard Home backend is running and that the port in
+Verify the CYGUARD backend is running and that the port in
 `AdguardHome.yaml` matches the running instance.
 
 ### E2e tests fail to start
 
-E2e tests require the `./AdGuardHome` binary in the repository root. Build the
+E2e tests require the `./cyguard` binary in the repository root. Build the
 backend first (see [HACKING.md](../HACKING.md)). Playwright starts the backend
 automatically; if a server is already running on port 3000, stop it first:
 
@@ -323,8 +323,8 @@ by Webpack, Vitest, and ESLint.
 
 - [AGENTS.md](./AGENTS.md) — code guidelines, architecture, and project
   structure
-- [README.md](../README.md) — AdGuard Home project overview and user manual
-- [HACKING.md](../HACKING.md) — AdGuard Home developer guidelines (Go backend)
+- [README.md](../README.md) — CYGUARD project overview and user manual
+- [HACKING.md](../HACKING.md) — CYGUARD developer guidelines (Go backend)
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — contribution workflow
 - [CHANGELOG.md](../CHANGELOG.md) — changelog
 - [AdGuard Code Guidelines](https://github.com/AdguardTeam/CodeGuidelines) —

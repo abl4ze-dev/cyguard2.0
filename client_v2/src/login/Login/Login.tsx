@@ -1,5 +1,4 @@
 import intl from 'panel/common/intl';
-
 import { PublicHeader } from 'panel/common/ui/PublicHeader';
 import { Icons } from 'panel/common/ui/Icons';
 
@@ -22,7 +21,9 @@ export const Login = () => {
                 useLocalLanguage={true}
             />
             <div class={styles.login}>
-                <h1 class={styles.title}>{intl.getMessage('login')}</h1>
+                <span class={styles.eyebrow}>{intl.getMessage('cyguard_login_eyebrow')}</span>
+                <h1 class={styles.title}>{intl.getMessage('cyguard_login_title')}</h1>
+                <p class={styles.subtitle}>{intl.getMessage('cyguard_login_subtitle')}</p>
                 <Form onSubmit={handleSubmit} />
             </div>
 

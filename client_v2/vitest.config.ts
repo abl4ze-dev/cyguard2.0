@@ -6,7 +6,9 @@ import { defineConfig } from 'vitest/config';
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-    plugins: [solid()],
+    // Vitest does not use HMR.  Disabling the refresh runtime also avoids a
+    // Windows file-URL conversion failure for its virtual /@solid-refresh ID.
+    plugins: [solid({ hot: false })],
     resolve: {
         conditions: ['development', 'browser'],
         // Force Vite to use a single solid-js instance across all deps,

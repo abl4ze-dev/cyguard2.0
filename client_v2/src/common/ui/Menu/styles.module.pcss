@@ -37,11 +37,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    font-size: 16px;
+    margin: 2px 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 14px;
     line-height: 21px;
     font-weight: var(--weight-regular);
-    color: var(--default-main-text);
+    color: var(--cyguard-sidebar-text);
     text-decoration: none;
     max-width: 100%;
     white-space: nowrap;
@@ -55,26 +57,33 @@
 
     &:hover,
     &:focus {
-        color: var(--default-main-text);
-        background-color: var(--pressed-page-background);
+        color: var(--cyguard-sidebar-heading);
+        background-color: var(--cyguard-accent-soft);
         text-decoration: none;
     }
 
     &.activeLink {
-        color: var(--default-link);
+        color: var(--cyguard-sidebar-heading);
+        background: linear-gradient(
+            90deg,
+            var(--cyguard-accent-strong),
+            var(--cyguard-accent-fade)
+        );
+        box-shadow: inset 2px 0 var(--product-tertiary-40);
 
         .linkIcon {
-            color: var(--default-link);
+            color: var(--product-tertiary-40);
         }
     }
 }
 
 .accordionLink {
-    padding: 12px 16px 12px 52px;
+    margin-left: 24px;
+    padding: 9px 12px 9px 28px;
 }
 
 .linkIcon {
-    color: var(--default-gray-icons);
+    color: var(--cyguard-sidebar-muted);
     transition: color var(--t2);
 }
 
@@ -106,6 +115,29 @@
     transition:
         transform var(--t2),
         color var(--t2);
+}
+
+.sectionLabel {
+    margin: 18px 24px 8px;
+    color: var(--cyguard-sidebar-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+.productMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 18px 24px 12px;
+    color: var(--cyguard-sidebar-heading);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+
+    & span {
+        color: var(--cyguard-sidebar-muted);
+        font-size: 9px;
+    }
 }
 
 .accordionArrowOpen {

@@ -1,4 +1,31 @@
 [data-theme='dark'] {
+    --default-page-background: #05070b;
+    --hovered-page-background: #101827;
+    --pressed-page-background: #172033;
+    --page-background-additional: #080b12;
+    --page-background-additional-hovered: #101827;
+    --page-background-additional-pressed: #172033;
+    --default-cards-background: #0b111a;
+    --default-popup-background: #101827;
+    --default-footer-background: #080b12;
+    --default-item-divider: #1e293b;
+    --default-main-text: #f8fafc;
+    --disabled-main-text: #64748b;
+    --default-description-text: #94a3b8;
+    --default-labels: #cbd5e1;
+    --default-input-background: #0b111a;
+    --default-input-on-card-background: #080b12;
+    --default-inactive-input-stroke: #334155;
+    --default-active-input-stroke: #38bdf8;
+    --default-dropdown-menu-background: #101827;
+    --hovered-dropdown-menu-background: #172033;
+    --pressed-dropdown-menu-background: #1e293b;
+    --default-secondary-button: #101827;
+    --default-secondary-button-stroke: #334155;
+    --default-black-icons: #e2e8f0;
+    --default-gray-icons: #94a3b8;
+    --default-stats-background: #1e293b;
+    --main-box-shadow: 0 1px 0 rgb(30 41 59 / 80%);
     /* Page background */
     --default-page-background: var(--gray-90);
     --hovered-page-background: var(--gray-80);
@@ -135,4 +162,35 @@
     --fills-switch-knob-disabled: var(--gray-50);
     /* Logo */
     --default-logo-color: var(--gray-0);
+}
+
+/* CYGUARD dark-first surface overrides.  Keep these last so component tokens remain authoritative. */
+[data-theme='dark'] {
+    --default-page-background: #05070b;
+    --hovered-page-background: #101827;
+    --pressed-page-background: #172033;
+    --page-background-additional: #080b12;
+    --page-background-additional-hovered: #101827;
+    --page-background-additional-pressed: #172033;
+    --default-cards-background: #0b111a;
+    --default-popup-background: #101827;
+    --default-footer-background: #080b12;
+    --default-item-divider: #1e293b;
+    --default-main-text: #f8fafc;
+    --disabled-main-text: #64748b;
+    --default-description-text: #94a3b8;
+    --default-labels: #cbd5e1;
+    --default-input-background: #0b111a;
+    --default-input-on-card-background: #080b12;
+    --default-inactive-input-stroke: #334155;
+    --default-active-input-stroke: #38bdf8;
+    --default-dropdown-menu-background: #101827;
+    --hovered-dropdown-menu-background: #172033;
+    --pressed-dropdown-menu-background: #1e293b;
+    --default-secondary-button: #101827;
+    --default-secondary-button-stroke: #334155;
+    --default-black-icons: #e2e8f0;
+    --default-gray-icons: #94a3b8;
+    --default-stats-background: #1e293b;
+    --main-box-shadow: 0 1px 0 rgb(30 41 59 / 80%);
 }

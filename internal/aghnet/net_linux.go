@@ -196,7 +196,7 @@ func dhcpcdConfIface(ifaceName string, subnet netip.Prefix, gateway netip.Addr) 
 		b,
 		"\n# ",
 		ifaceName,
-		" added by AdGuard Home.\ninterface ",
+		" added by CYGUARD.\ninterface ",
 		ifaceName,
 		"\nstatic ip_address=",
 		subnet.String(),

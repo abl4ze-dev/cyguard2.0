@@ -115,7 +115,7 @@ func NewDefaultSessionStorage(
 	if err != nil {
 		ds.logger.ErrorContext(ctx, "opening db", "filename", dbFilename, slogutil.KeyError, err)
 		if errors.Is(err, berrors.ErrInvalid) {
-			const s = "AdGuard Home cannot be initialized due to an incompatible file system.\n" +
+			const s = "CYGUARD cannot be initialized due to an incompatible file system.\n" +
 				"Please read the explanation here: https://adguard-dns.io/kb/adguard-home/getting-started/#limitations"
 			slogutil.PrintLines(ctx, ds.logger, slog.LevelError, "", s)
 		}

@@ -277,6 +277,11 @@ export const Table = <T extends Record<string, any>>(props: TableProps<T>) => {
                                     return (
                                         <div
                                             class={cn(s.tableRow, props.tableRowClass)}
+                                            data-row-id={
+                                                props.getRowId
+                                                    ? String(props.getRowId(row, index()))
+                                                    : undefined
+                                            }
                                             style={tableStyle()}
                                             onClick={() => props.onRowClick?.(row)}
                                         >

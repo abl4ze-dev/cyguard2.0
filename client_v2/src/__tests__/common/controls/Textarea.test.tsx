@@ -36,6 +36,33 @@ describe('Textarea — comment highlight', () => {
         expect(overlay).not.toBeInTheDocument();
     });
 
+    it('forwards the test id without highlighting', () => {
+        const { container } = render(() => (
+            <Textarea value={multilineValue} data-testid="plain-textarea" />
+        ));
+
+        expect(container.querySelector('textarea')).toHaveAttribute(
+            'data-testid',
+            'plain-textarea',
+        );
+    });
+
+    it('forwards the test id with highlighting', () => {
+        const { container } = render(() => (
+            <Textarea
+                value={multilineValue}
+                data-testid="highlighted-textarea"
+                highlightComments
+                commentPrefixes={COMMENT_LINE_TOKENS}
+            />
+        ));
+
+        expect(container.querySelector('textarea')).toHaveAttribute(
+            'data-testid',
+            'highlighted-textarea',
+        );
+    });
+
     it('applies commentLine class to lines starting with #', () => {
         const { container } = render(() => (
             <Textarea

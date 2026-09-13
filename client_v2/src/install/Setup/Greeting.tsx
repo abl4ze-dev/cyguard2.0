@@ -7,7 +7,6 @@ import { installState, setLanguage } from 'panel/stores/install';
 import { Controls } from './Controls';
 import styles from './styles.module.pcss';
 
-import routerImage from '../../img/router.svg';
 import type { Lang } from 'panel/api/model/lang';
 import theme from 'panel/lib/theme';
 
@@ -33,7 +32,13 @@ export const Greeting = () => {
     return (
         <div class={styles.greeting}>
             <div class={styles.info}>
-                <h1 class={styles.titleStep}>{intl.getMessage('setup_guide_greeting_title')}</h1>
+                <span class={styles.setupEyebrow}>
+                    {intl.getMessage('cyguard_setup_eyebrow')}
+                </span>
+                <h1 class={styles.titleStep}>{intl.getMessage('cyguard_setup_title')}</h1>
+                <p class={styles.setupSubtitle}>
+                    {intl.getMessage('cyguard_setup_subtitle')}
+                </p>
 
                 <label class={cn(styles.langLabel, theme.text.t3)}>
                     {intl.getMessage('select_language')}
@@ -61,7 +66,11 @@ export const Greeting = () => {
             </div>
 
             <div class={styles.content}>
-                <img src={routerImage} class={styles.routerImage} alt="Router" />
+                <img
+                    src="assets/cyguard-shield.svg"
+                    class={styles.securityImage}
+                    alt={intl.getMessage('cyguard_setup_shield_alt')}
+                />
             </div>
         </div>
     );

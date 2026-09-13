@@ -8,7 +8,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"runtime"
 	"testing"
 	"time"
 
@@ -131,11 +130,6 @@ func TestUpdater_Update(t *testing.T) {
 	assert.Equal(t, "AdGuardHome.yaml", string(d))
 
 	t.Run("config_check", func(t *testing.T) {
-		// TODO(s.chzhen):  Test on Windows also.
-		if runtime.GOOS == "windows" {
-			t.Skip("skipping config check test on windows")
-		}
-
 		err = u.Update(testutil.ContextWithTimeout(t, testTimeout), false)
 		assert.NoError(t, err)
 	})

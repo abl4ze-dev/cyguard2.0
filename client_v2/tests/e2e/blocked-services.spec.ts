@@ -363,7 +363,7 @@ test.describe('Blocked Services Page', () => {
         await navItem.click();
 
         // Should be on schedule page
-        await expect(page).toHaveURL(/#blocked_services\/schedule/);
+        await expect(page).toHaveURL(/\/#\/blocked_services\/schedule/);
     });
 
     // TODO: Check if the component actually disables switches during API calls.
@@ -420,7 +420,7 @@ test.describe('Inactivity Schedule Page', () => {
             .getByRole('link', { name: 'Blocked services' });
         await breadcrumb.click();
 
-        await expect(page).toHaveURL(/#blocked_services$/);
+        await expect(page).toHaveURL(/\/#\/blocked_services$/);
     });
 
     test('should display timezone selector', async ({ page }) => {
@@ -430,20 +430,22 @@ test.describe('Inactivity Schedule Page', () => {
     });
 
     test('should display all 7 days of the week', async ({ page }) => {
-        const scheduleRows = page.locator('[data-testid^="schedule-row-"]');
+        const scheduleRows = page
+            .getByTestId('inactivity-schedule-list')
+            .locator(':scope > [data-testid^="schedule-row-"]');
         await expect(scheduleRows).toHaveCount(7);
     });
 
     test('should show configured time for Monday', async ({ page }) => {
         // Monday has start: 3600000 (01:00), end: 64800000 (18:00)
-        const mondayRow = page.locator('[data-testid^="schedule-row-"]').first();
+        const mondayRow = page.getByTestId('schedule-row-mon');
         await expect(mondayRow).toContainText('01:00');
         await expect(mondayRow).toContainText('18:00');
     });
 
     test('should show full day indicator for Wednesday', async ({ page }) => {
         // Wednesday has start: 0, end: 86340000 (full day)
-        const wednesdayRow = page.locator('[data-testid^="schedule-row-"]').nth(2);
+        const wednesdayRow = page.getByTestId('schedule-row-wed');
         // Should show "24h" or "All day"
         const allDayText = wednesdayRow.getByText(/24h|all day/i);
         await expect(allDayText).toBeVisible();
@@ -451,31 +453,31 @@ test.describe('Inactivity Schedule Page', () => {
 
     test('should show no schedule text for unconfigured days', async ({ page }) => {
         // Tuesday (index 1) has no schedule
-        const tuesdayRow = page.locator('[data-testid^="schedule-row-"]').nth(1);
+        const tuesdayRow = page.getByTestId('schedule-row-tue');
         const noScheduleText = tuesdayRow.getByText(/no schedule/i);
         await expect(noScheduleText).toBeVisible();
     });
 
     test('should show edit and delete buttons for configured days', async ({ page }) => {
         // Monday is configured - should have edit and delete buttons
-        const mondayRow = page.locator('[data-testid^="schedule-row-"]').first();
-        const editButton = mondayRow.locator('button').first();
-        const deleteButton = mondayRow.locator('button').nth(1);
+        const mondayRow = page.getByTestId('schedule-row-mon');
+        const editButton = mondayRow.getByTestId('schedule-row-mon-edit');
+        const deleteButton = mondayRow.getByTestId('schedule-row-mon-delete');
         await expect(editButton).toBeVisible();
         await expect(deleteButton).toBeVisible();
     });
 
     test('should show add button for unconfigured days', async ({ page }) => {
         // Tuesday is not configured - should have an add button
-        const tuesdayRow = page.locator('[data-testid^="schedule-row-"]').nth(1);
-        const addButton = tuesdayRow.locator('button');
+        const tuesdayRow = page.getByTestId('schedule-row-tue');
+        const addButton = tuesdayRow.getByTestId('schedule-row-tue-add');
         await expect(addButton).toBeVisible();
     });
 
     test('should open modal when add button is clicked', async ({ page }) => {
         // Click add on Tuesday
-        const tuesdayRow = page.locator('[data-testid^="schedule-row-"]').nth(1);
-        const addButton = tuesdayRow.locator('button');
+        const tuesdayRow = page.getByTestId('schedule-row-tue');
+        const addButton = tuesdayRow.getByTestId('schedule-row-tue-add');
         await addButton.click();
 
         // Modal should be visible
@@ -485,8 +487,8 @@ test.describe('Inactivity Schedule Page', () => {
 
     test('should open modal with pre-populated data when edit is clicked', async ({ page }) => {
         // Click edit on Monday (first configured day)
-        const mondayRow = page.locator('[data-testid^="schedule-row-"]').first();
-        const editButton = mondayRow.locator('button').first();
+        const mondayRow = page.getByTestId('schedule-row-mon');
+        const editButton = mondayRow.getByTestId('schedule-row-mon-edit');
         await editButton.click();
 
         // Modal should be visible
@@ -496,8 +498,8 @@ test.describe('Inactivity Schedule Page', () => {
 
     test('should show confirmation dialog when delete is clicked', async ({ page }) => {
         // Click delete on Monday
-        const mondayRow = page.locator('[data-testid^="schedule-row-"]').first();
-        const deleteButton = mondayRow.locator('button').nth(1);
+        const mondayRow = page.getByTestId('schedule-row-mon');
+        const deleteButton = mondayRow.getByTestId('schedule-row-mon-delete');
         await deleteButton.click();
 
         // Confirmation dialog should appear
@@ -518,8 +520,8 @@ test.describe('Inactivity Schedule Page', () => {
         });
 
         // Click delete on Monday
-        const mondayRow = page.locator('[data-testid^="schedule-row-"]').first();
-        const deleteButton = mondayRow.locator('button').nth(1);
+        const mondayRow = page.getByTestId('schedule-row-mon');
+        const deleteButton = mondayRow.getByTestId('schedule-row-mon-delete');
         await deleteButton.click();
 
         // Confirm deletion
@@ -547,8 +549,8 @@ test.describe('Inactivity Schedule Page', () => {
         });
 
         // Click delete on Monday
-        const mondayRow = page.locator('[data-testid^="schedule-row-"]').first();
-        const deleteButton = mondayRow.locator('button').nth(1);
+        const mondayRow = page.getByTestId('schedule-row-mon');
+        const deleteButton = mondayRow.getByTestId('schedule-row-mon-delete');
         await deleteButton.click();
 
         // Cancel deletion
@@ -575,8 +577,8 @@ test.describe('Inactivity Schedule Page', () => {
         });
 
         // Click add on Tuesday
-        const tuesdayRow = page.locator('[data-testid^="schedule-row-"]').nth(1);
-        const addButton = tuesdayRow.locator('button');
+        const tuesdayRow = page.getByTestId('schedule-row-tue');
+        const addButton = tuesdayRow.getByTestId('schedule-row-tue-add');
         await addButton.click();
 
         // Modal should be visible - click Save (default values are 00:00 to 23:59)
@@ -614,10 +616,13 @@ test.describe('Inactivity Schedule Page', () => {
         const selectInput = timezoneWrapper.locator('input');
 
         await expect(selectInput).toBeVisible();
+        await timezoneWrapper.locator('[data-part="control"]').click();
         await selectInput.fill('America/New_York');
 
         // Click the option
-        const option = page.getByText('America/New_York', { exact: true }).first();
+        const option = page
+            .locator('[data-scope="combobox"][data-part="content"][data-state="open"]')
+            .getByRole('option', { name: /^America\/New_York \(GMT/ });
         await expect(option).toBeVisible();
         await option.click();
 
@@ -680,8 +685,8 @@ test.describe('Blocked Services - Schedule Integration', () => {
         await expect(page.locator('h1')).toBeVisible();
 
         // Delete Monday schedule
-        const mondayRow = page.locator('[data-testid^="schedule-row-"]').first();
-        const deleteButton = mondayRow.locator('button').nth(1);
+        const mondayRow = page.getByTestId('schedule-row-mon');
+        const deleteButton = mondayRow.getByTestId('schedule-row-mon-delete');
         await deleteButton.click();
 
         const confirmButton = page
@@ -703,7 +708,7 @@ test.describe('Blocked Services - Schedule Integration', () => {
         const navItem = page.getByTestId('blocked-services-schedule-link');
         await navItem.click();
 
-        await expect(page).toHaveURL(/#blocked_services\/schedule/);
+        await expect(page).toHaveURL(/\/#\/blocked_services\/schedule/);
 
         // Navigate back via breadcrumbs
         const breadcrumb = page
@@ -711,6 +716,6 @@ test.describe('Blocked Services - Schedule Integration', () => {
             .getByRole('link', { name: 'Blocked services' });
         await breadcrumb.click();
 
-        await expect(page).toHaveURL(/#blocked_services$/);
+        await expect(page).toHaveURL(/\/#\/blocked_services$/);
     });
 });

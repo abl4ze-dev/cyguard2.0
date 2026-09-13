@@ -3,7 +3,7 @@ import type { Page } from '@playwright/test';
 import { ADMIN_PASSWORD, ADMIN_USERNAME } from '../constants';
 
 /**
- * Logs in to the AdGuard Home dashboard with retry logic.
+ * Logs in to the CYGUARD dashboard with retry logic.
  * Retries up to 3 times to handle flaky page load timing.
  */
 export async function login(page: Page): Promise<void> {

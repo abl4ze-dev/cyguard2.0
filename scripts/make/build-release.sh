@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# AdGuard Home Release Script
+# CYGUARD Release Script
 #
 # The commentary in this file is written with the assumption that the reader
 # only has superficial knowledge of the POSIX shell language and alike.
@@ -37,7 +37,12 @@ log() {
 	fi
 }
 
-log 'starting to build AdGuard Home release'
+log 'starting to build CYGUARD release'
+
+# Allow users to override the Go command.  Windows release builds also use it
+# to generate the native version resource consumed by the Go linker.
+go="${GO:-go}"
+readonly go
 
 # Require the channel to be set.  Additional validation is performed later by
 # go-build.sh.
@@ -51,6 +56,25 @@ if [ "$version" = 'v0.0.0' ] || [ "$version" = '' ]; then
 	version="$(sh ./scripts/make/version.sh)"
 fi
 readonly version
+
+# Extract the numeric SemVer core used by Windows file properties.  Release
+# suffixes such as -beta.1 remain part of the CLI version but cannot be stored
+# in the fixed numeric Windows fields.
+version_numeric="${version#v}"
+version_numeric="${version_numeric%%-*}"
+version_numeric="${version_numeric%%+*}"
+version_major="${version_numeric%%.*}"
+version_remainder="${version_numeric#*.}"
+version_minor="${version_remainder%%.*}"
+version_patch="${version_remainder#*.}"
+case "${version_major}.${version_minor}.${version_patch}" in
+*[!0-9.]* | *.*.*.* | .* | *..* | *.)
+	echo "version '$version' does not have a numeric major.minor.patch core" 1>&2
+
+	exit 1
+	;;
+esac
+readonly version_numeric version_major version_remainder version_minor version_patch
 
 log "channel '$channel'"
 log "version '$version'"
@@ -183,7 +207,7 @@ sign() {
 build() {
 	# Get the arguments.  Here and below, use the "build_" prefix for all
 	# variables local to function build.
-	build_dir="${dist}/${1}/AdGuardHome" \
+	build_dir="${dist}/${1}/CYGUARD" \
 		build_ar="$2" \
 		build_os="$3" \
 		build_arch="$4" \
@@ -193,29 +217,82 @@ build() {
 
 	# Use the ".exe" filename extension if we build a Windows release.
 	if [ "$build_os" = 'windows' ]; then
-		build_output="./${build_dir}/AdGuardHome.exe"
+		build_output="./${build_dir}/cyguard.exe"
 	else
-		build_output="./${build_dir}/AdGuardHome"
+		build_output="./${build_dir}/cyguard"
 	fi
 
 	mkdir -p "./${build_dir}"
+
+	# Embed the icon, application manifest, and Windows version information.
+	# goversioninfo runs for the host platform and emits a target-specific
+	# resource object, which the following Go build automatically consumes.
+	windows_resource=''
+	if [ "$build_os" = 'windows' ]; then
+		windows_resource='./resource.syso'
+		rm -f "$windows_resource"
+
+		case "$build_arch" in
+		386)
+			windows_resource_flags=''
+			;;
+		amd64)
+			windows_resource_flags='-64'
+			;;
+		arm64)
+			windows_resource_flags='-arm -64'
+			;;
+		*)
+			echo "unsupported Windows resource architecture '$build_arch'" 1>&2
+
+			return 1
+			;;
+		esac
+
+		# Don't quote the flags so that the optional pair is split into
+		# separate command arguments.
+		# shellcheck disable=SC2086
+		(cd ./build/windows && env GOOS='' GOARCH='' "$go" run \
+			github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v1.7.0 \
+			$windows_resource_flags \
+			-file-version="${version_major}.${version_minor}.${version_patch}.0" \
+			-product-version="${version_numeric}" \
+			-ver-major="$version_major" \
+			-ver-minor="$version_minor" \
+			-ver-patch="$version_patch" \
+			-ver-build=0 \
+			-product-ver-major="$version_major" \
+			-product-ver-minor="$version_minor" \
+			-product-ver-patch="$version_patch" \
+			-product-ver-build=0 \
+			-o ../../resource.syso versioninfo.json)
+	fi
 
 	# Build the binary.
 	#
 	# Set GOARM and GOMIPS to an empty string if $build_arm and $build_mips are
 	# the zero value by removing the hyphen as if it's a prefix.
-	env GOARCH="$build_arch" \
+	if ! env GOARCH="$build_arch" \
 		GOARM="${build_arm#-}" \
 		GOMIPS="${build_mips#-}" \
-		GOOS="$os" \
+		GOOS="$build_os" \
 		VERBOSE="$((verbose - 1))" \
 		VERSION="$version" \
 		OUT="$build_output" \
-		sh ./scripts/make/go-build.sh
+		sh ./scripts/make/go-build.sh; then
+		if [ "$windows_resource" != '' ]; then
+			rm -f "$windows_resource"
+		fi
+
+		return 1
+	fi
+	if [ "$windows_resource" != '' ]; then
+		rm -f "$windows_resource"
+	fi
 
 	log "$build_output"
 
-	sign "$os" "$build_output"
+	sign "$build_os" "$build_output"
 
 	# Prepare the build directory for archiving.
 	cp ./CHANGELOG.md ./LICENSE.txt ./README.md "$build_dir"
@@ -227,11 +304,11 @@ build() {
 		build_archive="./${dist}/${build_ar}.zip"
 		# TODO(a.garipov): Find an option similar to the -C option of tar for
 		# zip.
-		(cd "${dist}/${1}" && zip -9 -q -r "../../${build_archive}" "./AdGuardHome")
+		(cd "${dist}/${1}" && zip -9 -q -r "../../${build_archive}" "./CYGUARD")
 		;;
 	*)
 		build_archive="./${dist}/${build_ar}.tar.gz"
-		tar -C "./${dist}/${1}" -c -f - "./AdGuardHome" | gzip -9 - >"$build_archive"
+		tar -C "./${dist}/${1}" -c -f - "./CYGUARD" | gzip -9 - >"$build_archive"
 		;;
 	esac
 
@@ -267,15 +344,15 @@ echo "$platforms" | while read -r os arch arm mips; do
 
 	case "$arch" in
 	arm)
-		dir="AdGuardHome_${os}_${arch}_${arm}"
-		ar="AdGuardHome_${os}_${arch}v${arm}"
+		dir="cyguard-${os}-${arch}-${arm}"
+		ar="cyguard-${os}-${arch}v${arm}"
 		;;
 	mips*)
-		dir="AdGuardHome_${os}_${arch}_${mips}"
+		dir="cyguard-${os}-${arch}-${mips}"
 		ar="$dir"
 		;;
 	*)
-		dir="AdGuardHome_${os}_${arch}"
+		dir="cyguard-${os}-${arch}"
 		ar="$dir"
 		;;
 	esac
@@ -285,7 +362,7 @@ done
 
 log "packing frontend"
 
-build_archive="./${dist}/AdGuardHome_frontend.tar.gz"
+build_archive="./${dist}/cyguard-frontend.tar.gz"
 tar -c -f - ./build | gzip -9 - >"$build_archive"
 log "$build_archive"
 
@@ -330,7 +407,7 @@ echo "version=$version" >"./${dist}/version.txt"
 
 # Create the version.json file.
 
-version_download_url="https://static.adtidy.org/adguardhome/${channel}"
+version_download_url="${VERSION_DOWNLOAD_URL:-https://static.adtidy.org/adguardhome/${channel}}"
 version_json="./${dist}/version.json"
 readonly version_download_url version_json
 
@@ -347,7 +424,7 @@ readonly announcement_url
 rm -f "$version_json"
 echo "{
   \"version\": \"${version}\",
-  \"announcement\": \"AdGuard Home ${version} is now available!\",
+  \"announcement\": \"CYGUARD ${version} is now available!\",
   \"announcement_url\": \"${announcement_url}\",
   \"selfupdate_min_version\": \"0.0\",
 " >>"$version_json"
@@ -357,9 +434,9 @@ echo "{
 #
 # TODO(a.garipov): Remove this around fall 2023.
 echo "
-  \"download_linux_mips64\": \"${version_download_url}/AdGuardHome_linux_mips64_softfloat.tar.gz\",
-  \"download_linux_mips64le\": \"${version_download_url}/AdGuardHome_linux_mips64le_softfloat.tar.gz\",
-  \"download_linux_mipsle\": \"${version_download_url}/AdGuardHome_linux_mipsle_softfloat.tar.gz\",
+  \"download_linux_mips64\": \"${version_download_url}/cyguard-linux-mips64-softfloat.tar.gz\",
+  \"download_linux_mips64le\": \"${version_download_url}/cyguard-linux-mips64le-softfloat.tar.gz\",
+  \"download_linux_mipsle\": \"${version_download_url}/cyguard-linux-mipsle-softfloat.tar.gz\",
 " >>"$version_json"
 
 # Same as with checksums above, don't use ls, because files matching one of the
@@ -374,19 +451,20 @@ for f in $ar_files; do
 	platform="$f"
 
 	# Remove the prefix.
-	platform="${platform#"./${dist}/AdGuardHome_"}"
+	platform="${platform#"./${dist}/cyguard-"}"
 
 	# Remove the filename extensions.
 	platform="${platform%.zip}"
 	platform="${platform%.tar.gz}"
+	platform_key="$(printf '%s' "$platform" | tr '-' '_')"
 
 	# Use the filename's base path.
 	filename="${f#"./${dist}/"}"
 
 	if [ "$i" -eq "$ar_files_len" ]; then
-		echo "  \"download_${platform}\": \"${version_download_url}/${filename}\"" >>"$version_json"
+		echo "  \"download_${platform_key}\": \"${version_download_url}/${filename}\"" >>"$version_json"
 	else
-		echo "  \"download_${platform}\": \"${version_download_url}/${filename}\"," >>"$version_json"
+		echo "  \"download_${platform_key}\": \"${version_download_url}/${filename}\"," >>"$version_json"
 	fi
 
 	i="$((i + 1))"

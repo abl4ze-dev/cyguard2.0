@@ -113,6 +113,9 @@ client_v2/
 └── constants.js                   # BUILD_ENVS, BASE_URL = 'control'
 ```
 
+The feature-page tree also contains `src/components/Diagnostics/`, which
+renders live service state and links to existing troubleshooting surfaces.
+
 # Build And Test Commands
 
 All commands are run from the `client_v2/` directory. If your terminal's

@@ -204,7 +204,7 @@ export const getLogsConfig = async () => {
     try {
         const data = await getQueryLogConfig();
         setState({
-            interval: data.interval || DAY,
+            interval: data.interval ?? DAY,
             enabled: data.enabled ?? true,
             anonymize_client_ip: data.anonymize_client_ip ?? false,
             customInterval: !QUERY_LOG_INTERVALS_DAYS.includes(data.interval)

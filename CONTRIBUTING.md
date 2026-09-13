@@ -1,6 +1,6 @@
-# Contributing to AdGuard Home
+# Contributing to CYGUARD
 
-If you want to contribute to AdGuard Home by filing or commenting on an issue or opening a pull request, please follow the instructions below.
+If you want to contribute to CYGUARD by filing or commenting on an issue or opening a pull request, please follow the instructions below.
 
 ## General recommendations
 

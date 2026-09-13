@@ -273,7 +273,7 @@ func newWebAPI(ctx context.Context, conf *webAPIConfig) (w *webAPI) {
 	if conf.firstRun {
 		conf.logger.InfoContext(
 			ctx,
-			"This is the first launch of AdGuard Home, redirecting everything to /install.html",
+			"This is the first launch of CYGUARD, redirecting everything to /install.html",
 		)
 
 		mux.Handle("/install.html", w.preInstallHandler(clientFS))
@@ -334,7 +334,7 @@ const loggerKeyServer = "server"
 func (web *webAPI) start(ctx context.Context) {
 	defer slogutil.RecoverAndExit(ctx, web.logger, osutil.ExitCodeFailure)
 
-	web.logger.InfoContext(ctx, "AdGuard Home is available at the following addresses:")
+	web.logger.InfoContext(ctx, "CYGUARD is available at the following addresses:")
 
 	go func() {
 		// Apply the initial TLS configuration.  The background context is used

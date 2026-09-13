@@ -106,10 +106,10 @@ func Main(clientBuildFS fs.FS) {
 	fatalOnError(ctx, baseLogger, err)
 
 	// Print the first message after logger is configured.
-	baseLogger.InfoContext(ctx, "starting adguard home", "version", version.Full())
+	baseLogger.InfoContext(ctx, "starting CYGUARD", "version", version.Full())
 	baseLogger.DebugContext(ctx, "current working directory", "path", workDir)
 	if opts.runningAsService {
-		baseLogger.InfoContext(ctx, "adguard home is running as a service")
+		baseLogger.InfoContext(ctx, "CYGUARD is running as a service")
 	}
 
 	var glTokenFileRoot *os.Root
@@ -200,7 +200,7 @@ func setupContext(
 	isFirstRun bool,
 ) {
 	if isFirstRun {
-		baseLogger.InfoContext(ctx, "this is the first time adguard home has been launched")
+		baseLogger.InfoContext(ctx, "this is the first time CYGUARD has been launched")
 		checkNetworkPermissions(ctx, baseLogger)
 
 		return
@@ -1140,23 +1140,23 @@ func (c *configuration) anonymizer() (ipmut *aghnet.IPMut) {
 // permCheckHelp is printed when binding to privileged ports is not permitted.
 const permCheckHelp = `Permission check failed.
 
-AdGuard Home is not allowed to bind to privileged ports (for instance, port 53).
+CYGUARD is not allowed to bind to privileged ports (for instance, port 53).
 Please note that this is crucial for a server to be able to use privileged ports.
 
 You have two options:
-1. Run AdGuard Home with root privileges.
+1. Run CYGUARD with root privileges.
 2. On Linux you can grant the CAP_NET_BIND_SERVICE capability:
 https://github.com/AdguardTeam/AdGuardHome/wiki/Getting-Started#running-without-superuser`
 
 // checkNetworkPermissions checks if the current user permissions are enough to
 // use the required networking functionality.  l must not be nil.
 func checkNetworkPermissions(ctx context.Context, l *slog.Logger) {
-	l.InfoContext(ctx, "checking if adguard home has the necessary permissions")
+	l.InfoContext(ctx, "checking if CYGUARD has the necessary permissions")
 
 	if ok, err := aghnet.CanBindPrivilegedPorts(ctx, l); !ok || err != nil {
 		l.ErrorContext(
 			ctx,
-			"this is the first launch of adguard home; you must run it as administrator.",
+			"this is the first launch of CYGUARD; you must run it as administrator.",
 		)
 
 		os.Exit(osutil.ExitCodeFailure)
@@ -1178,7 +1178,7 @@ func checkNetworkPermissions(ctx context.Context, l *slog.Logger) {
 		)
 	}
 
-	l.InfoContext(ctx, "adguard home can bind to port 53")
+	l.InfoContext(ctx, "CYGUARD can bind to port 53")
 }
 
 // writePIDFile writes the PID of the current process to the file at fn.  l
@@ -1245,7 +1245,7 @@ func initWorkingDir(opts options) (workDir string, err error) {
 //
 // TODO(m.kazantsev):  Consider making it a method of [signalHandler].
 func cleanup(ctx context.Context, l *slog.Logger, hc *aghnet.HostsContainer) {
-	l.InfoContext(ctx, "stopping adguard home")
+	l.InfoContext(ctx, "stopping CYGUARD")
 
 	err := stopDNSServer(ctx, l)
 	if err != nil {
@@ -1454,7 +1454,7 @@ func cmdlineUpdate(
 	err = restartService(ctx, l)
 	if err != nil {
 		l.DebugContext(ctx, "restarting service", slogutil.KeyError, err)
-		l.InfoContext(ctx, "AdGuard Home was not installed as a service. "+
+		l.InfoContext(ctx, "CYGUARD was not installed as a service. "+
 			"Please restart running instances of AdGuardHome manually.")
 	}
 

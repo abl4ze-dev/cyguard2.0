@@ -1,12 +1,15 @@
-import { chromium, type FullConfig } from '@playwright/test';
+import { chromium } from '@playwright/test';
 
 import { ADMIN_USERNAME, ADMIN_PASSWORD, PORT } from '../constants';
+import { startOwnedBackend, stopOwnedBackend } from './backendLifecycle';
 
-async function globalSetup(config: FullConfig) {
+async function globalSetup() {
+    await startOwnedBackend();
+
     const browser = await chromium.launch({
         slowMo: 100,
     });
-    const page = await browser.newPage({ baseURL: config.webServer?.url });
+    const page = await browser.newPage({ baseURL: `http://127.0.0.1:${PORT}` });
 
     try {
         await page.goto('/');
@@ -44,7 +47,8 @@ async function globalSetup(config: FullConfig) {
         await page.locator('#open_dashboard').click();
         await page.waitForURL((url) => !url.href.endsWith('/install.html'));
     } catch (error) {
-        console.error('Error during global setup:', error);
+        await stopOwnedBackend();
+        throw error;
     } finally {
         await browser.close();
     }

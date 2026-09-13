@@ -1,4 +1,4 @@
-# AdGuard Home scripts
+# CYGUARD scripts
 
 ## `hooks/`: Git hooks
 
@@ -24,7 +24,7 @@ Required environment:
 
 Optional environment:
 
-- `DOCKER_IMAGE_NAME`: the name of the resulting Docker container. By default it’s `adguardhome-dev`.
+- `DOCKER_IMAGE_NAME`: the name of the resulting Docker container. By default it’s `cyguard-dev`.
 
 - `DOCKER_PUSH`: `1` to push the image to DockerHub, `0` to not push. By default it’s `0`.
 
@@ -56,9 +56,19 @@ Optional environment:
 
 - `VERBOSE`: `1` to be verbose, `2` to also print environment. This script calls `go-build.sh` with the verbosity level one level lower, so to get verbosity level `2` in `go-build.sh`, set this to `3` when calling `build-release.sh`.
 
-- `VERSION`: release version. Will be set by `version.sh` if it is unset or if it has the default `Makefile` value of `v0.0.0`.
+- `VERSION`: release version.  CYGUARD defaults to `v2.0.0`; release jobs may
+  override it for subsequent 2.0.x builds.
 
-We’re using Go’s [forward compatibility mechanism][go-toolchain] for updating the Go version. This means that if your `go` version is 1.21+ but is different from the one required by AdGuard Home, the `go` tool will automatically download the required version.
+- `VERSION_DOWNLOAD_URL`: base URL that hosts CYGUARD release archives.  Set
+  this for deployment builds so the generated `version.json` points at the
+  branded archive names.  Development builds retain the upstream URL only as a
+  compatibility default.
+
+Windows release builds generate `resource.syso` from
+`build/windows/versioninfo.json` with `goversioninfo` v1.7.0 before compiling.
+The temporary resource is removed after each build.
+
+We’re using Go’s [forward compatibility mechanism][go-toolchain] for updating the Go version. This means that if your `go` version is 1.21+ but is different from the one required by CYGUARD, the `go` tool will automatically download the required version.
 
 If you want to use the version installed on your builder, run:
 
@@ -101,7 +111,7 @@ Optional environment:
 
 - `VERBOSE`: verbosity level. `1` shows every command that is run and every Go package that is processed. `2` also shows subcommands and environment. The default value is `0`, don’t be verbose.
 
-- `VERSION`: release version. Will be set by `version.sh` if it is unset or if it has the default `Makefile` value of `v0.0.0`.
+- `VERSION`: build version.  The Makefile defaults CYGUARD builds to `v2.0.0`.
 
 Required environment:
 
@@ -174,7 +184,8 @@ Downloads the binaries to pack them into Snapcraft packages.
 
 Required environment:
 
-- `CHANNEL`: release channel, see above.
+- `VERSION_DOWNLOAD_URL`: URL of the directory containing branded CYGUARD
+  release archives.
 
 ### `upload.sh`
 

@@ -2,14 +2,18 @@ package dnsforward
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net"
 	"net/http"
+	"net/netip"
 	"net/url"
 	"testing"
 
 	"github.com/AdguardTeam/dnsproxy/proxy"
+	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // testTLSConn is a tlsConn for tests.
@@ -117,15 +121,6 @@ func TestServer_clientIDFromDNSContext(t *testing.T) {
 		inclHTTPTLS: false,
 		strictSNI:   true,
 	}, {
-		name:         "quic_clientid",
-		proto:        proxy.ProtoQUIC,
-		confSrvName:  "example.com",
-		cliSrvName:   "cli.example.com",
-		wantClientID: "cli",
-		wantErrMsg:   "",
-		inclHTTPTLS:  false,
-		strictSNI:    true,
-	}, {
 		name:         "tls_clientid_issue3437",
 		proto:        proxy.ProtoTLS,
 		confSrvName:  "example.com",
@@ -138,15 +133,6 @@ func TestServer_clientIDFromDNSContext(t *testing.T) {
 	}, {
 		name:         "tls_case",
 		proto:        proxy.ProtoTLS,
-		confSrvName:  "example.com",
-		cliSrvName:   "InSeNsItIvE.example.com",
-		wantClientID: "insensitive",
-		wantErrMsg:   ``,
-		inclHTTPTLS:  false,
-		strictSNI:    true,
-	}, {
-		name:         "quic_case",
-		proto:        proxy.ProtoQUIC,
 		confSrvName:  "example.com",
 		cliSrvName:   "InSeNsItIvE.example.com",
 		wantClientID: "insensitive",
@@ -212,10 +198,6 @@ func TestServer_clientIDFromDNSContext(t *testing.T) {
 			switch tc.proto {
 			case proxy.ProtoHTTPS:
 				httpReq = newHTTPReq(tc.cliSrvName, tc.inclHTTPTLS)
-			case proxy.ProtoQUIC:
-				// TODO(a.garipov):  Find ways of testing this with the new
-				// quic-go API.
-				t.Skipf("skipped during the quic-go api update")
 			case proxy.ProtoTLS:
 				conn = testTLSConn{
 					serverName: tc.cliSrvName,
@@ -233,6 +215,61 @@ func TestServer_clientIDFromDNSContext(t *testing.T) {
 			assert.Equal(t, tc.wantClientID, clientID)
 
 			testutil.AssertErrorMsg(t, tc.wantErrMsg, err)
+		})
+	}
+}
+
+func TestServer_clientIDFromDNSContextQUIC(t *testing.T) {
+	testCases := []struct {
+		name         string
+		serverName   string
+		wantClientID string
+	}{
+		{name: "clientid", serverName: "cli.example.com", wantClientID: "cli"},
+		{name: "case", serverName: "InSeNsItIvE.example.com", wantClientID: "insensitive"},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			clientIDs := make(chan string, 1)
+			s, _ := createTestTLS(t, &TLSConfig{
+				QUICListenAddrs: []*net.UDPAddr{{IP: net.IP{127, 0, 0, 1}}},
+				ServerName:      "example.com",
+			})
+			s.conf.ClientsContainer = &clientsContainer{
+				OnCustomUpstreamConfig: func(clientID string, _ netip.Addr) *proxy.CustomUpstreamConfig {
+					clientIDs <- clientID
+
+					return nil
+				},
+			}
+			s.conf.UpstreamConfig.Upstreams = []upstream.Upstream{newGoogleUpstream()}
+			startDeferStop(t, s)
+
+			addr := s.dnsProxy.Addr(proxy.ProtoQUIC)
+			_, port, err := net.SplitHostPort(addr.String())
+			require.NoError(t, err)
+
+			u, err := upstream.AddressToUpstream(
+				fmt.Sprintf("%s://%s", proxy.ProtoQUIC, net.JoinHostPort(tc.serverName, port)),
+				&upstream.Options{
+					Logger:             testLogger,
+					InsecureSkipVerify: true,
+					Bootstrap:          upstream.StaticResolver{netip.MustParseAddr("127.0.0.1")},
+				},
+			)
+			require.NoError(t, err)
+
+			res, err := u.Exchange(createGoogleATestMessage())
+			require.NoError(t, err)
+			assertGoogleAResponse(t, res)
+
+			select {
+			case clientID := <-clientIDs:
+				assert.Equal(t, tc.wantClientID, clientID)
+			case <-testutil.ContextWithTimeout(t, testTimeout).Done():
+				require.Fail(t, "server did not process the DNS-over-QUIC request")
+			}
 		})
 	}
 }

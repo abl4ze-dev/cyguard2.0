@@ -435,10 +435,6 @@ func TestRewritesExceptionIP(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			if tc.name != "match_AAAA_host3.com" {
-				t.SkipNow()
-			}
-
 			r := d.processRewrites(tc.host, tc.dtyp)
 			assert.Equal(t, tc.want, r.IPList)
 			assert.Equal(t, tc.wantReason, r.Reason)

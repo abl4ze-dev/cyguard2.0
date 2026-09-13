@@ -42,7 +42,7 @@ for arch in \
 	'arm64' \
 	'armhf' \
 	'i386'; do
-	snap_file="./AdGuardHome_${arch}.snap"
+	snap_file="./cyguard_${arch}.snap"
 
 	# Catch the exit code and the combined output to later inspect it.
 	set +e

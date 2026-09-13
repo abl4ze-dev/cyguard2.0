@@ -1,24 +1,20 @@
 # The %VARIABLES% are be replaced by actual values by the build script.
-'name': 'adguard-home'
+'name': 'cyguard'
 'base': 'core22'
 'version': '%VERSION%'
-'summary': Network-wide ads & trackers blocking DNS server
+'summary': DNS-level cybersecurity and privacy protection
 'description': |
-  AdGuard Home is a network-wide software for blocking ads & tracking. After
-  you set it up, it'll cover ALL your home devices, and you don't need any
-  client-side software for that.
-
-  It operates as a DNS server that re-routes tracking domains to a "black hole,"
-  thus preventing your devices from connecting to those servers. It's based
-  on software we use for our public AdGuard DNS servers -- both share a lot
-  of common code.
+  CYGUARD protects every device on a network at the DNS layer.  It blocks
+  malicious, tracking, and unwanted domains without requiring client software
+  on each device.  Administrators retain local control of configuration,
+  filtering policy, activity data, and encrypted DNS endpoints.
 'grade': 'stable'
 'confinement': 'strict'
 'architectures':
   - '%ARCH%'
 'apps':
-  'adguard-home':
-    'command': 'AdGuardHome --no-check-update -w $SNAP_DATA'
+  'cyguard':
+    'command': 'cyguard --no-check-update -w $SNAP_DATA'
     'plugs':
       # Add the "network-bind" plug to bind to interfaces.
       - 'network-bind'
@@ -33,7 +29,7 @@
       - 'network-control'
     'daemon': 'simple'
     'restart-condition': 'always'
-  'adguard-home-web':
+  'cyguard-web':
     'command': 'adguard-home-web.sh'
     'plugs':
       - 'desktop'

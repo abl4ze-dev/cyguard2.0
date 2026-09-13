@@ -1,0 +1,82 @@
+.header {
+    margin-bottom: 32px;
+
+    & h1 {
+        margin: 6px 0 8px;
+        font-size: clamp(30px, 4vw, 44px);
+        line-height: 1.08;
+    }
+
+    & p {
+        max-width: 680px;
+        color: var(--default-description-text);
+    }
+}
+
+.eyebrow {
+    color: var(--product-tertiary-40);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+.statusGrid,
+.resources {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+}
+
+.statusCard,
+.resourceCard {
+    border: 1px solid var(--default-item-divider);
+    border-radius: 16px;
+    background: var(--default-cards-background);
+    box-shadow: var(--cyguard-card-shadow);
+}
+
+.statusCard {
+    display: flex;
+    min-height: 126px;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+
+    & span {
+        color: var(--default-description-text);
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    & strong {
+        font-size: 20px;
+    }
+}
+
+.ok { color: var(--cyguard-status-ok); }
+.warning { color: var(--cyguard-status-warning); }
+.error { color: var(--cyguard-status-error); }
+
+.resources {
+    margin-top: 24px;
+}
+
+.resourceCard {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    color: var(--default-main-text);
+    text-decoration: none;
+    transition: border-color var(--t2), transform var(--t2), background-color var(--t2);
+
+    &:hover,
+    &:focus-visible {
+        border-color: var(--product-primary-50);
+        background: var(--hovered-page-background);
+        transform: translateY(-2px);
+    }
+
+    & svg { color: var(--product-tertiary-40); }
+    & p { margin: 6px 0 0; color: var(--default-description-text); }
+}

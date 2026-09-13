@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# AdGuard Home Installation Script
+# CYGUARD Installation Script
 
 # Exit the script if a pipeline fails (-e), prevent accidental filename
 # expansion (-f), and consider undefined variables as errors (-u).
@@ -102,7 +102,7 @@ check_required() {
 		if ! is_command "$cmd"; then
 			log "the full list of required software: [$required]"
 
-			error_exit "$cmd is required to install AdGuard Home via this script"
+			error_exit "$cmd is required to install CYGUARD via this script"
 		fi
 	done
 }
@@ -293,9 +293,8 @@ fix_darwin() {
 	# Set the package extension.
 	pkg_ext='zip'
 
-	# It is important to install AdGuard Home into the /Applications directory
-	# on macOS.  Otherwise, it may grant not enough privileges to the AdGuard
-	# Home.
+	# Install CYGUARD into /Applications on macOS so that it can receive the
+	# privileges required by the DNS service.
 	out_dir='/Applications'
 }
 
@@ -354,7 +353,7 @@ set_download_func() {
 	elif is_command 'fetch'; then
 		download_func='download_fetch'
 	else
-		error_exit "either curl or wget is required to install AdGuard Home via this script"
+		error_exit "either curl or wget is required to install CYGUARD via this script"
 	fi
 }
 
@@ -384,12 +383,17 @@ configure() {
 	set_sudo_cmd
 	check_out_dir
 
-	pkg_name="AdGuardHome_${os}_${cpu}.${pkg_ext}"
-	url="https://static.adtidy.org/adguardhome/${channel}/${pkg_name}"
-	agh_dir="${out_dir}/AdGuardHome"
-	readonly pkg_name url agh_dir
+	pkg_cpu="$(printf '%s' "$cpu" | tr '_' '-')"
+	pkg_name="cyguard-${os}-${pkg_cpu}.${pkg_ext}"
+	release_base_url="${CYGUARD_RELEASE_BASE_URL:-}"
+	if [ "$uninstall" -ne '1' ] && [ "$release_base_url" = '' ]; then
+		error_exit 'please set CYGUARD_RELEASE_BASE_URL to the directory containing CYGUARD release archives'
+	fi
+	url="${release_base_url}/${pkg_name}"
+	cyguard_dir="${out_dir}/CYGUARD"
+	readonly pkg_cpu pkg_name release_base_url url cyguard_dir
 
-	log "AdGuard Home will be installed into $agh_dir"
+	log "CYGUARD will be installed into $cyguard_dir"
 }
 
 # Function is_root checks for root privileges to be granted.
@@ -402,12 +406,12 @@ is_root() {
 	fi
 
 	if is_command "$sudo_cmd"; then
-		log 'note that AdGuard Home requires root privileges to install using this script'
+		log 'note that CYGUARD requires root privileges to install using this script'
 
 		return 1
 	fi
 
-	error_exit 'root privileges are required to install AdGuard Home using this script
+	error_exit 'root privileges are required to install CYGUARD using this script
 please, restart it with root privileges'
 }
 
@@ -417,7 +421,7 @@ please, restart it with root privileges'
 #
 # TODO(e.burkov): Try to avoid restarting.
 rerun_with_root() {
-	script_url='https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh'
+	script_url="${CYGUARD_INSTALL_SCRIPT_URL:?please set CYGUARD_INSTALL_SCRIPT_URL when running the installer without root privileges}"
 	readonly script_url
 
 	r='-R'
@@ -444,7 +448,10 @@ rerun_with_root() {
 	# shell to execute to prevent it from getting an empty input and exiting
 	# with a zero code in that case.
 	{ "$download_func" "$script_url" || echo 'exit 1'; } \
-		| $sudo_cmd sh -s -- -c "$channel" -C "$cpu" -O "$os" -o "$out_dir" "$r" "$u" "$v"
+		| $sudo_cmd env \
+			CYGUARD_INSTALL_SCRIPT_URL="$script_url" \
+			CYGUARD_RELEASE_BASE_URL="$release_base_url" \
+			sh -s -- -c "$channel" -C "$cpu" -O "$os" -o "$out_dir" "$r" "$u" "$v"
 
 	# Exit the script.  Since if the code of the previous pipeline is non-zero,
 	# the execution won't reach this point thanks to set -e, exit with zero.
@@ -486,17 +493,17 @@ unpack() {
 
 	unpacked_contents="$(
 		echo
-		ls -l -A "$agh_dir"
+		ls -l -A "$cyguard_dir"
 	)"
 	log "successfully unpacked, contents: $unpacked_contents"
 
 	rm "$pkg_name"
 }
 
-# Function handle_existing detects the existing AGH installation and takes care
+# Function handle_existing detects an existing CYGUARD installation and takes care
 # of removing it if needed.
 handle_existing() {
-	if ! [ -d "$agh_dir" ]; then
+	if ! [ -d "$cyguard_dir" ]; then
 		log 'no need to uninstall'
 
 		if [ "$uninstall" -eq '1' ]; then
@@ -506,25 +513,25 @@ handle_existing() {
 		return 0
 	fi
 
-	existing_adguard_home="$(ls -1 -A "$agh_dir")"
-	if [ "$existing_adguard_home" != '' ]; then
-		log 'the existing AdGuard Home installation is detected'
+	existing_cyguard="$(ls -1 -A "$cyguard_dir")"
+	if [ "$existing_cyguard" != '' ]; then
+		log 'the existing CYGUARD installation is detected'
 
 		if [ "$reinstall" -ne '1' ] && [ "$uninstall" -ne '1' ]; then
 			error_exit \
-				"to reinstall/uninstall the AdGuard Home using this script specify one of the '-r' or '-u' flags"
+				"to reinstall or uninstall CYGUARD using this script specify one of the '-r' or '-u' flags"
 		fi
 
 		# TODO(e.burkov):  Remove the stop once v0.107.1 released.
-		if (cd "$agh_dir" && ! ./AdGuardHome -s stop || ! ./AdGuardHome -s uninstall); then
-			# It doesn't terminate the script since it is possible that AGH just
+		if (cd "$cyguard_dir" && ! ./cyguard -s stop || ! ./cyguard -s uninstall); then
+			# It doesn't terminate the script since the application may simply be
 			# not installed as service but appearing in the directory.
-			log "cannot uninstall AdGuard Home from $agh_dir"
+			log "cannot uninstall CYGUARD from $cyguard_dir"
 		fi
 
-		rm -r "$agh_dir"
+		rm -r "$cyguard_dir"
 
-		log 'AdGuard Home was successfully uninstalled'
+		log 'CYGUARD was successfully uninstalled'
 	fi
 
 	if [ "$uninstall" -eq '1' ]; then
@@ -532,7 +539,7 @@ handle_existing() {
 	fi
 }
 
-# Function install_service tries to install AGH as service.
+# Function install_service tries to install CYGUARD as a service.
 install_service() {
 	# Installing the service as root is required at least on FreeBSD.
 	use_sudo='0'
@@ -540,13 +547,13 @@ install_service() {
 		use_sudo='1'
 	fi
 
-	if (cd "$agh_dir" && maybe_sudo ./AdGuardHome -s install); then
+	if (cd "$cyguard_dir" && maybe_sudo ./cyguard -s install); then
 		return 0
 	fi
 
-	log "installation failed, removing $agh_dir"
+	log "installation failed, removing $cyguard_dir"
 
-	rm -r "$agh_dir"
+	rm -r "$cyguard_dir"
 
 	# Some devices detected to have armv7 CPU face the compatibility issues with
 	# actual armv7 builds.  We should try to install the armv5 binary instead.
@@ -561,7 +568,7 @@ install_service() {
 		rerun_with_root
 	fi
 
-	error_exit 'cannot install AdGuardHome as a service'
+	error_exit 'cannot install CYGUARD as a service'
 }
 
 # Entrypoint
@@ -580,7 +587,7 @@ sudo_cmd='sudo'
 
 parse_opts "$@"
 
-echo 'starting AdGuard Home installation script'
+echo 'starting CYGUARD installation script'
 
 configure
 check_required
@@ -599,6 +606,6 @@ unpack
 install_service
 
 printf '%s\n' \
-	'AdGuard Home is now installed and running' \
+	'CYGUARD is now installed and running' \
 	'you can control the service status with the following commands:' \
-	"$sudo_cmd ${agh_dir}/AdGuardHome -s start|stop|restart|status|install|uninstall"
+	"$sudo_cmd ${cyguard_dir}/cyguard -s start|stop|restart|status|install|uninstall"

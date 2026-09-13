@@ -20,8 +20,8 @@ import (
 
 const (
 	serviceName        = "AdGuardHome"
-	serviceDisplayName = "AdGuard Home service"
-	serviceDescription = "AdGuard Home: Network-level blocker"
+	serviceDisplayName = "CYGUARD"
+	serviceDescription = "CYGUARD — Cybersecurity & Privacy Protection"
 )
 
 // svcLogPrefix is the prefix for logging from service manager.
@@ -344,10 +344,10 @@ func handleServiceInstallCmd(
 
 	if detectFirstRun(ctx, l, workDir, confPath) {
 		slogutil.PrintLines(ctx, l, slog.LevelInfo, "", "Almost ready!\n"+
-			"AdGuard Home is successfully installed and will automatically start on boot.\n"+
+			"CYGUARD is successfully installed and will automatically start on boot.\n"+
 			"There are a few more things that must be configured before you can use it.\n"+
 			"Click on the link below and follow the Installation Wizard steps to finish setup.\n"+
-			"AdGuard Home is now available at the following addresses:")
+			"CYGUARD is now available at the following addresses:")
 		printHTTPAddresses(ctx, l)
 	}
 

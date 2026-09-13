@@ -1,12 +1,12 @@
 'openapi': '3.2.0'
 'info':
-  'title': 'AdGuard Home'
+  'title': 'CYGUARD'
   'description': >
-    AdGuard Home REST-ish API.  Our admin web interface is built on top of this
+    CYGUARD REST-ish API.  The administration interface is built on top of this
     REST-ish API.
   'version': '0.107'
   'contact':
-    'name': 'AdGuard Home'
+    'name': 'Upstream source project'
     'url': 'https://github.com/AdguardTeam/AdGuardHome'
 
 'servers':
@@ -25,13 +25,13 @@
 - 'name': 'filtering'
   'description': 'Rule-based filtering'
 - 'name': 'global'
-  'description': 'AdGuard Home server general settings and controls'
+  'description': 'CYGUARD server general settings and controls'
 - 'name': 'i18n'
   'description': 'Application localization'
 - 'name': 'install'
   'description': 'First-time install configuration handlers'
 - 'name': 'log'
-  'description': 'AdGuard Home query log'
+  'description': 'CYGUARD query log'
 - 'name': 'mobileconfig'
   'description': 'Apple .mobileconfig'
 - 'name': 'parental'
@@ -43,9 +43,9 @@
 - 'name': 'safesearch'
   'description': 'Enforce family-friendly results in search engines'
 - 'name': 'stats'
-  'description': 'AdGuard Home statistics'
+  'description': 'CYGUARD statistics'
 - 'name': 'tls'
-  'description': 'AdGuard Home HTTPS/DoH/DoQ/DoT settings'
+  'description': 'CYGUARD HTTPS/DoH/DoQ/DoT settings'
 
 'paths':
   '/status':
@@ -1502,7 +1502,7 @@
         - 'RewriteRule'
     'ServerStatus':
       'type': 'object'
-      'description': 'AdGuard Home server status and configuration'
+      'description': 'CYGUARD server status and configuration'
       'required':
       - 'dns_addresses'
       - 'dns_port'
@@ -1894,7 +1894,7 @@
     'VersionInfo':
       'type': 'object'
       'description': >
-        Information about the latest available version of AdGuard Home.
+        Information about the latest available version of CYGUARD.
       'required':
       - 'disabled'
       'properties':
@@ -1907,11 +1907,11 @@
           'example': 'v0.9'
         'announcement':
           'type': 'string'
-          'example': 'AdGuard Home v0.9 is now available!'
+          'example': 'CYGUARD v0.9 is now available!'
         'announcement_url':
           'type': 'string'
           'example': >
-            https://github.com/AdguardTeam/AdGuardHome/releases/tag/v0.9
+            https://github.com/AdguardTeam/CYGUARD/releases/tag/v0.9
         'can_autoupdate':
           'type': 'boolean'
     'Stats':
@@ -2709,7 +2709,7 @@
           'example': 53
     'AddressesInfo':
       'type': 'object'
-      'description': 'AdGuard Home addresses configuration'
+      'description': 'CYGUARD addresses configuration'
       'required':
       - 'dns_port'
       - 'interfaces'
@@ -3295,7 +3295,7 @@
     'InitialConfiguration':
       'type': 'object'
       'description': >
-        AdGuard Home initial configuration for the first-install wizard.
+        CYGUARD initial configuration for the first-install wizard.
       'required':
       - 'dns'
       - 'web'

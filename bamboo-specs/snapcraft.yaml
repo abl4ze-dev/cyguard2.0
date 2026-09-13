@@ -6,7 +6,7 @@
 'plan':
     'project-key': 'AGH'
     'key': 'AGHSNAP'
-    'name': 'AdGuard Home - Build and publish Snapcraft release'
+    'name': 'CYGUARD - Build and publish Snapcraft release'
 # Make sure to sync any changes with the branch overrides below.
 'variables':
     # This variable is used to override Docker caching, for example to rerun a
@@ -14,6 +14,7 @@
     'cacheBuster': '0'
     'channel': 'edge'
     'dockerSnap': 'adguard/snap-builder:2.1'
+    'releaseBaseUrl': ''
     'snapcraftChannel': 'edge'
 
 'stages':
@@ -32,19 +33,19 @@
 'Build packages':
     'artifacts':
       - 'name': 'i386_snap'
-        'pattern': 'AdGuardHome_i386.snap'
+        'pattern': 'cyguard_i386.snap'
         'shared': true
         'required': true
       - 'name': 'amd64_snap'
-        'pattern': 'AdGuardHome_amd64.snap'
+        'pattern': 'cyguard_amd64.snap'
         'shared': true
         'required': true
       - 'name': 'armhf_snap'
-        'pattern': 'AdGuardHome_armhf.snap'
+        'pattern': 'cyguard_armhf.snap'
         'shared': true
         'required': true
       - 'name': 'arm64_snap'
-        'pattern': 'AdGuardHome_arm64.snap'
+        'pattern': 'cyguard_arm64.snap'
         'shared': true
         'required': true
     'key': 'BP'
@@ -67,6 +68,7 @@
                   --build-arg "BASE_IMAGE=${bamboo_dockerSnap}" \
                   --build-arg "CACHE_BUSTER=${bamboo_cacheBuster}" \
                   --build-arg "CHANNEL=${bamboo_channel}" \
+                  --build-arg "VERSION_DOWNLOAD_URL=${bamboo_releaseBaseUrl}" \
                   --build-arg "VERSION=${bamboo_buildNumber}" \
                   --output '.' \
                   --progress 'plain' \
@@ -130,7 +132,7 @@
         'after-inactive-days': 30
     'integration':
         'push-on-success': false
-        'merge-from': 'AdGuard Home - Build and publish Snapcraft release'
+        'merge-from': 'CYGUARD - Build and publish Snapcraft release'
     'link-to-jira': true
 
 'notifications':

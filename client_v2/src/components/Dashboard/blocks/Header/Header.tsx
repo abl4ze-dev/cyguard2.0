@@ -166,8 +166,15 @@ export const Header = (props: Props) => {
     return (
         <div class={s.header}>
             <div class={s.headerLeft}>
+                <div class={s.commandHeading}>
+                    <span>{intl.getMessage('cyguard_dashboard_eyebrow')}</span>
+                    <h1>{intl.getMessage('cyguard_dashboard_title')}</h1>
+                    <p>{intl.getMessage('cyguard_dashboard_subtitle')}</p>
+                </div>
                 <div class={s.titleRow}>
-                    <h1 class={cn(theme.title.h5, s.onlyMobile)}>{intl.getMessage('dashboard')}</h1>
+                    <h2 class={cn(theme.title.h5, s.onlyMobile)}>
+                        {intl.getMessage('protection')}
+                    </h2>
 
                     <button
                         type="button"
@@ -181,9 +188,12 @@ export const Header = (props: Props) => {
                     </button>
                 </div>
 
-                <h1 class={cn(theme.title.h3_tablet, s.onlyDesktop)}>
-                    {intl.getMessage('protection')}
-                </h1>
+                <div class={cn(s.statusBadge, props.protectionEnabled ? s.protected : s.inactive)}>
+                    <span class={s.statusDot} />
+                    {props.protectionEnabled
+                        ? intl.getMessage('cyguard_status_protected')
+                        : intl.getMessage('cyguard_status_inactive')}
+                </div>
 
                 <div class={s.toggleRow}>
                     <div class={s.protectionToggle}>
@@ -196,7 +206,7 @@ export const Header = (props: Props) => {
                         />
 
                         <div class={cn(theme.text.t2, s.onlyMobile)}>
-                            {intl.getMessage('protection')}
+                            {intl.getMessage('cyguard_dns_filtering')}
                         </div>
                     </div>
 

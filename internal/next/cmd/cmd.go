@@ -34,7 +34,7 @@ func Main(embeddedFrontend fs.FS) {
 
 	baseLogger.InfoContext(
 		ctx,
-		"starting adguard home",
+		"starting CYGUARD",
 		"version", version.Version(),
 		"pid", os.Getpid(),
 	)

@@ -383,8 +383,11 @@ async function selectDnsRecordType(page: Page, value: string) {
 
     await control.scrollIntoViewIfNeeded();
     await control.click();
-    await expect(page.locator('[data-part="content"]')).toBeVisible();
-    await page.locator('[data-part="content"]').getByText(value, { exact: true }).click();
+    const listbox = page.locator(
+        '[data-scope="combobox"][data-part="content"][data-state="open"]',
+    );
+    await expect(listbox).toBeVisible();
+    await listbox.getByText(value, { exact: true }).click();
     await page.keyboard.press('Tab');
 }
 
@@ -400,9 +403,7 @@ test.describe('User rules desktop', () => {
 
         await expect.poll(() => setRulesPayloads.length).toBe(1);
         expect(setRulesPayloads[0].rules).toEqual(['||editor.example^']);
-        await expect(page.getByTestId('toast').last()).toContainText(
-            'Custom rules successfully saved',
-        );
+        await expect(page.getByTestId('toast').last()).toContainText('Changes saved');
     });
 
     test('checks a qtype-specific rule and refreshes the result after allowlisting', async ({
@@ -427,13 +428,14 @@ test.describe('User rules desktop', () => {
 
         await expect.poll(() => setRulesPayloads.length).toBe(1);
         expect(setRulesPayloads[0].rules?.filter(Boolean)).toEqual([
-            '||qtype.example^$dnstype=CNAME',
             '@@||qtype.example^$important',
         ]);
         await expect.poll(() => checkHostRequests.length).toBe(2);
         expect(checkHostRequests[1].searchParams.get('qtype')).toBe('CNAME');
         await expect(page.getByTestId('toast')).toHaveCount(1);
-        await expect(page.getByTestId('toast').last()).toContainText('Rule added to allowlist');
+        await expect(page.getByTestId('toast').last()).toContainText(
+            'User rule added: @@||qtype.example^$important',
+        );
         await expect(page.getByTestId('toast-action')).toHaveText('Undo');
         await expect(page.getByTestId('user-rules-result-title')).toHaveText('Domain is allowed');
     });

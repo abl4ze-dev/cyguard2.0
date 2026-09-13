@@ -232,9 +232,9 @@ func (u *Updater) prepare(ctx context.Context) (err error) {
 	u.packageName = filepath.Join(u.updateDir, pkgNameOnly)
 	u.backupDir = filepath.Join(u.workDir, "agh-backup")
 
-	updateExeName := "AdGuardHome"
+	updateExeName := "cyguard"
 	if u.goos == "windows" {
-		updateExeName = "AdGuardHome.exe"
+		updateExeName = "cyguard.exe"
 	}
 
 	u.backupExeName = filepath.Join(u.backupDir, filepath.Base(u.execPath))
@@ -274,6 +274,21 @@ func (u *Updater) unpack(ctx context.Context) (err error) {
 		}
 	} else {
 		return fmt.Errorf("unknown package extension")
+	}
+
+	// Accept legacy upstream archives as well as CYGUARD release archives.
+	// This preserves update compatibility without constraining the new binary
+	// and artifact names.
+	_, err = os.Stat(u.updateExeName)
+	if errors.Is(err, os.ErrNotExist) {
+		legacyName := "AdGuardHome"
+		if u.goos == "windows" {
+			legacyName = "AdGuardHome.exe"
+		}
+
+		u.updateExeName = filepath.Join(u.updateDir, legacyName)
+	} else if err != nil {
+		return fmt.Errorf("checking unpacked executable: %w", err)
 	}
 
 	return nil
@@ -449,7 +464,7 @@ func (u *Updater) unpackTarGzFile(
 	outName := filepath.Join(outDir, name)
 
 	if hdr.Typeflag == tar.TypeDir {
-		if name == "AdGuardHome" {
+		if name == "AdGuardHome" || name == "CYGUARD" {
 			// Top-level AdGuardHome/.  Skip it.
 			//
 			// TODO(a.garipov): This whole package needs to be rewritten and
@@ -563,7 +578,7 @@ func (u *Updater) unpackZipFile(
 
 	outputName := filepath.Join(outDir, name)
 	if fi.IsDir() {
-		if name == "AdGuardHome" {
+		if name == "AdGuardHome" || name == "CYGUARD" {
 			// Top-level AdGuardHome/.  Skip it.
 			//
 			// TODO(a.garipov): See the similar TODO in
@@ -646,7 +661,7 @@ func copyFile(src, dst string, perm fs.FileMode) (err error) {
 
 // copySupportingFiles copies each file specified in files from srcdir to
 // dstdir.  If a file specified as a path, only the name of the file is used.
-// It skips AdGuardHome, AdGuardHome.exe, and AdGuardHome.yaml.
+// It skips current and legacy executable names as well as AdGuardHome.yaml.
 func (u *Updater) copySupportingFiles(
 	ctx context.Context,
 	files []string,
@@ -655,7 +670,9 @@ func (u *Updater) copySupportingFiles(
 ) (err error) {
 	for _, f := range files {
 		_, name := filepath.Split(f)
-		if name == "AdGuardHome" || name == "AdGuardHome.exe" || name == "AdGuardHome.yaml" {
+		if name == "cyguard" || name == "cyguard.exe" ||
+			name == "AdGuardHome" || name == "AdGuardHome.exe" ||
+			name == "AdGuardHome.yaml" {
 			continue
 		}
 

@@ -55,7 +55,7 @@ func ErrorAndLog(
 // UserAgent returns the ID of the service as a User-Agent string.  It can also
 // be used as the value of the Server HTTP header.
 func UserAgent() (ua string) {
-	return fmt.Sprintf("AdGuardHome/%s", version.Version())
+	return fmt.Sprintf("CYGUARD/%s", version.Version())
 }
 
 // textPlainDeprMsg is the message returned to API users when they try to use

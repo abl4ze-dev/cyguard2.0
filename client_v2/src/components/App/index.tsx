@@ -1,5 +1,5 @@
 import { createEffect, onMount, onCleanup, Show } from 'solid-js';
-import { HashRouter, Route, Navigate } from '@solidjs/router';
+import { HashRouter, Route, Navigate, useLocation } from '@solidjs/router';
 
 import { Sidebar } from 'panel/common/ui/Sidebar';
 import { Icons } from 'panel/common/ui/Icons';
@@ -43,6 +43,43 @@ import {
     TopUpstreamsPage,
     UpstreamAvgTimePage,
 } from '../Stats';
+import { Diagnostics } from '../Diagnostics';
+
+const getPageTitle = (path: string): string | undefined => {
+    switch (path) {
+        case Paths.Dashboard:
+            return intl.getMessage('cyguard_nav_dashboard');
+        case Paths.ScanCenter:
+            return intl.getMessage('cyguard_nav_scan');
+        case Paths.NetworkActivity:
+            return intl.getMessage('cyguard_nav_network');
+        case Paths.ThreatProtection:
+            return intl.getMessage('cyguard_nav_threats');
+        case Paths.Devices:
+            return intl.getMessage('cyguard_nav_devices');
+        case Paths.Privacy:
+            return intl.getMessage('cyguard_nav_privacy');
+        case Paths.Reports:
+            return intl.getMessage('cyguard_nav_reports');
+        case Paths.FlaggedSites:
+            return intl.getMessage('cyguard_nav_flagged');
+        case Paths.SettingsPage:
+            return intl.getMessage('cyguard_nav_settings');
+        case Paths.Diagnostics:
+            return intl.getMessage('cyguard_nav_diagnostics');
+        default:
+            return undefined;
+    }
+};
+
+const PageTitleSync = (): null => {
+    const location = useLocation();
+    createEffect(() => {
+        const section = getPageTitle(location.pathname);
+        document.title = section ? `CYGUARD — ${section}` : 'CYGUARD — Cybersecurity & Privacy Protection';
+    });
+    return null;
+};
 
 const SetupGuideRoute = () => <SetupGuide />;
 const BlockedServicesRoute = () => <BlockedServices />;
@@ -113,6 +150,7 @@ const App = () => {
         <HashRouter
             root={(props) => (
                 <>
+                    <PageTitleSync />
                     <Header />
 
                     <Banners />
@@ -134,6 +172,14 @@ const App = () => {
             )}
         >
             <Route path={Paths.Dashboard} component={Dashboard} />
+            <Route path={Paths.ScanCenter} component={UserRules} />
+            <Route path={Paths.NetworkActivity} component={QueryLog} />
+            <Route path={Paths.ThreatProtection} component={Blocklists} />
+            <Route path={Paths.Devices} component={Clients} />
+            <Route path={Paths.Privacy} component={Encryption} />
+            <Route path={Paths.Reports} component={Dashboard} />
+            <Route path={Paths.FlaggedSites} component={TopBlockedDomainsPage} />
+            <Route path={Paths.Diagnostics} component={Diagnostics} />
             <Route path={Paths.TopClients} component={TopClientsPage} />
             <Route path={Paths.TopQueriedDomains} component={TopQueriedDomainsPage} />
             <Route path={Paths.TopBlockedDomains} component={TopBlockedDomainsPage} />

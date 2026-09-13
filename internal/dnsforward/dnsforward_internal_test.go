@@ -574,22 +574,17 @@ func TestDoQServer(t *testing.T) {
 }
 
 func TestServerRace(t *testing.T) {
-	t.Skip("TODO(e.burkov): inspect the golibs/cache package for locks")
-
 	filterConf := &filtering.Config{
-		SafeBrowsingEnabled:   true,
-		SafeBrowsingCacheSize: 1000,
-		SafeSearchConf:        filtering.SafeSearchConfig{Enabled: true},
-		SafeSearchCacheSize:   1000,
-		ParentalCacheSize:     1000,
-		CacheTime:             30,
+		BlockingMode: filtering.BlockingModeDefault,
 	}
 	forwardConf := ServerConfig{
 		UDPListenAddrs: []*net.UDPAddr{{}},
 		TCPListenAddrs: []*net.TCPAddr{{}},
+		TLSConf:        &TLSConfig{},
 		Config: Config{
-			UpstreamMode: UpstreamModeLoadBalance,
-			UpstreamDNS:  []string{"8.8.8.8:53", "8.8.4.4:53"},
+			UpstreamMode:     UpstreamModeLoadBalance,
+			EDNSClientSubnet: &EDNSClientSubnet{Enabled: false},
+			ClientsContainer: EmptyClientsContainer{},
 		},
 		ConfModifier:  agh.EmptyConfigModifier{},
 		ServePlainDNS: true,

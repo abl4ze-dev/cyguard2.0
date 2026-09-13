@@ -43,7 +43,7 @@ readonly build_date
 
 # Set DOCKER_IMAGE_NAME to 'adguard/adguard-home' if you want (and are allowed)
 # to push to DockerHub.
-docker_image_name="${DOCKER_IMAGE_NAME:-adguardhome-dev}"
+docker_image_name="${DOCKER_IMAGE_NAME:-cyguard-dev}"
 readonly docker_image_name
 
 # Set DOCKER_PUSH to '1' if you want (and are allowed) to push to DockerHub.
@@ -84,18 +84,18 @@ dist_docker="${dist_dir}/docker"
 readonly dist_docker
 
 mkdir -p "$dist_docker"
-cp "${dist_dir}/AdGuardHome_linux_386/AdGuardHome/AdGuardHome" \
-	"${dist_docker}/AdGuardHome_linux_386_"
-cp "${dist_dir}/AdGuardHome_linux_amd64/AdGuardHome/AdGuardHome" \
-	"${dist_docker}/AdGuardHome_linux_amd64_"
-cp "${dist_dir}/AdGuardHome_linux_arm64/AdGuardHome/AdGuardHome" \
-	"${dist_docker}/AdGuardHome_linux_arm64_"
-cp "${dist_dir}/AdGuardHome_linux_arm_6/AdGuardHome/AdGuardHome" \
-	"${dist_docker}/AdGuardHome_linux_arm_v6"
-cp "${dist_dir}/AdGuardHome_linux_arm_7/AdGuardHome/AdGuardHome" \
-	"${dist_docker}/AdGuardHome_linux_arm_v7"
-cp "${dist_dir}/AdGuardHome_linux_ppc64le/AdGuardHome/AdGuardHome" \
-	"${dist_docker}/AdGuardHome_linux_ppc64le_"
+cp "${dist_dir}/cyguard-linux-386/CYGUARD/cyguard" \
+	"${dist_docker}/cyguard_linux_386_"
+cp "${dist_dir}/cyguard-linux-amd64/CYGUARD/cyguard" \
+	"${dist_docker}/cyguard_linux_amd64_"
+cp "${dist_dir}/cyguard-linux-arm64/CYGUARD/cyguard" \
+	"${dist_docker}/cyguard_linux_arm64_"
+cp "${dist_dir}/cyguard-linux-arm-6/CYGUARD/cyguard" \
+	"${dist_docker}/cyguard_linux_arm_v6"
+cp "${dist_dir}/cyguard-linux-arm-7/CYGUARD/cyguard" \
+	"${dist_docker}/cyguard_linux_arm_v7"
+cp "${dist_dir}/cyguard-linux-ppc64le/CYGUARD/cyguard" \
+	"${dist_docker}/cyguard_linux_ppc64le_"
 
 # docker_build_opt_tag is a function that wraps the call of docker build command
 # with optionally --tag flags.

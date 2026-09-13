@@ -34,6 +34,7 @@ ARG BASE_IMAGE=adguard/snap-builder:2.1
 FROM "$BASE_IMAGE" AS builder
 ARG CACHE_BUSTER=0
 ARG CHANNEL=development
+ARG VERSION_DOWNLOAD_URL=""
 ARG VERSION=""
 ADD snap /app/snap
 ADD scripts /app/scripts
@@ -47,6 +48,7 @@ export VERBOSE='1'
 env \
 	CHANNEL="${CHANNEL}" \
 	CACHE_BUSTER="${CACHE_BUSTER}" \
+	VERSION_DOWNLOAD_URL="${VERSION_DOWNLOAD_URL}" \
 	sh ./scripts/snap/download.sh \
 	;
 
@@ -58,10 +60,10 @@ EOF
 FROM scratch AS builder-exporter
 ARG CACHE_BUSTER=0
 ARG VERSION=""
-COPY --from=builder /app/AdGuardHome_amd64.snap /AdGuardHome_amd64.snap
-COPY --from=builder /app/AdGuardHome_arm64.snap /AdGuardHome_arm64.snap
-COPY --from=builder /app/AdGuardHome_armhf.snap /AdGuardHome_armhf.snap
-COPY --from=builder /app/AdGuardHome_i386.snap /AdGuardHome_i386.snap
+COPY --from=builder /app/cyguard_amd64.snap /cyguard_amd64.snap
+COPY --from=builder /app/cyguard_arm64.snap /cyguard_arm64.snap
+COPY --from=builder /app/cyguard_armhf.snap /cyguard_armhf.snap
+COPY --from=builder /app/cyguard_i386.snap /cyguard_i386.snap
 
 # publisher uploads the release artifacts to the Snap Store.
 FROM "$BASE_IMAGE" AS publisher
@@ -70,10 +72,10 @@ ARG SNAPCRAFT_CHANNEL=0
 ARG VERSION=""
 ADD snap /app/snap
 ADD scripts /app/scripts
-ADD AdGuardHome_amd64.snap /app/AdGuardHome_amd64.snap
-ADD AdGuardHome_arm64.snap /app/AdGuardHome_arm64.snap
-ADD AdGuardHome_armhf.snap /app/AdGuardHome_armhf.snap
-ADD AdGuardHome_i386.snap /app/AdGuardHome_i386.snap
+ADD cyguard_amd64.snap /app/cyguard_amd64.snap
+ADD cyguard_arm64.snap /app/cyguard_arm64.snap
+ADD cyguard_armhf.snap /app/cyguard_armhf.snap
+ADD cyguard_i386.snap /app/cyguard_i386.snap
 WORKDIR /app
 RUN \
     --mount=type=secret,id=SNAPCRAFT_STORE_CREDENTIALS,env=SNAPCRAFT_STORE_CREDENTIALS \

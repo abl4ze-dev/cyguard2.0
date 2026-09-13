@@ -18,7 +18,12 @@ for (const name of requiredEnv) {
 
 const quoteYaml = (value) => `'${value.replaceAll("'", "''")}'`;
 
-rmSync(process.env.E2E_WORK_DIR, { force: true, recursive: true });
+rmSync(process.env.E2E_WORK_DIR, {
+    force: true,
+    recursive: true,
+    maxRetries: 10,
+    retryDelay: 200,
+});
 mkdirSync(process.env.E2E_WORK_DIR, { mode: 0o700, recursive: true });
 
 const configBody = [

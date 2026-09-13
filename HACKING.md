@@ -1,4 +1,4 @@
-# AdGuard Home developer guidelines
+# CYGUARD developer guidelines
 
 This document was moved to the [AdGuard Code Guidelines repository][repo].  All sections with IDs now only have links to the corresponding files and sections in that repository.
 

@@ -23,9 +23,9 @@ log() {
 snapcraft_cmd="${SNAPCRAFT_CMD:-snapcraft}"
 readonly snapcraft_cmd
 
-version="$(./AdGuardHome_amd64 --version | cut -d ' ' -f 4)"
+version="$(./cyguard_amd64 --version | cut -d ' ' -f 4)"
 if [ "$version" = '' ]; then
-	log 'empty version from ./AdGuardHome_amd64'
+	log 'empty version from ./cyguard_amd64'
 
 	exit 1
 fi
@@ -38,13 +38,13 @@ for arch in \
 	'arm64' \
 	'armhf' \
 	'i386'; do
-	build_output="./AdGuardHome_${arch}"
-	snap_output="./AdGuardHome_${arch}.snap"
+	build_output="./cyguard_${arch}"
+	snap_output="./cyguard_${arch}.snap"
 	snap_dir="${snap_output}.dir"
 
 	# Create the meta subdirectory and copy files there.
 	mkdir -p "${snap_dir}/meta"
-	cp "$build_output" "${snap_dir}/AdGuardHome"
+	cp "$build_output" "${snap_dir}/cyguard"
 	cp './snap/local/adguard-home-web.sh' "$snap_dir"
 	cp -r './snap/gui' "${snap_dir}/meta/"
 

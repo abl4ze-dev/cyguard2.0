@@ -18,7 +18,7 @@ async function globalSetup(config: FullConfig) {
         const isServerRunning = await checkServerAvailable();
         if (!isServerRunning) {
             console.error(
-                `\nAdGuard Home server is not running. Start it first:\n  sudo ./AdGuardHome --local-frontend -v -c ${CONFIG_FILE_PATH}\n`,
+                `\nCYGUARD server is not running. Start it first:\n  sudo ./cyguard --local-frontend -v -c ${CONFIG_FILE_PATH}\n`,
             );
             process.exit(1);
         }

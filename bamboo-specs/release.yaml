@@ -3,7 +3,7 @@
 'plan':
     'project-key': 'AGH'
     'key': 'AGHBSNAPSPECS'
-    'name': 'AdGuard Home - Build and publish release'
+    'name': 'CYGUARD - Build and publish release'
 # Make sure to sync any changes with the branch overrides below.
 'variables':
     # This variable is used to override Docker caching, for example to rerun a
@@ -13,6 +13,8 @@
     'clientDir': 'client_v2'
     'dockerFrontend': 'adguard/home-js-builder:4.0'
     'dockerGo': 'adguard/go-builder:1.26.8--1'
+    'productVersion': 'v2.0.0'
+    'releaseBaseUrl': ''
 
 'stages':
   - 'Build frontend':
@@ -47,7 +49,7 @@
 
 'Build frontend':
     'artifacts':
-      - 'name': 'AdGuardHome frontend'
+      - 'name': 'CYGUARD frontend'
         'pattern': 'build/**'
         'shared': true
         'required': true
@@ -79,10 +81,10 @@
 
 'Make release':
     'artifact-subscriptions':
-      - 'artifact': 'AdGuardHome frontend'
+      - 'artifact': 'CYGUARD frontend'
     # TODO(a.garipov): Use more fine-grained artifact rules.
     'artifacts':
-      - 'name': 'AdGuardHome dists'
+      - 'name': 'CYGUARD distributions'
         'pattern': 'dist/**'
         'shared': true
         'required': true
@@ -108,7 +110,7 @@
                 # Explicitly checkout the revision that we need.
                 git checkout "${bamboo_repository_revision_number}"
 
-                version="$(env CHANNEL=${bamboo_channel} sh ./scripts/make/version.sh)"
+                version="${bamboo_productVersion}"
                 readonly version
 
                 docker info
@@ -131,6 +133,7 @@
                     --build-arg "SIGN=1" \
                     --build-arg "SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)" \
                     --build-arg "VERSION=$version" \
+                    --build-arg "VERSION_DOWNLOAD_URL=${bamboo_releaseBaseUrl}" \
                     --output '.' \
                     --progress 'plain' \
                     --secret id=GPG_KEY_PASSPHRASE \
@@ -270,7 +273,7 @@
         'after-inactive-days': 30
     'integration':
         'push-on-success': false
-        'merge-from': 'AdGuard Home   - Build and publish release'
+        'merge-from': 'CYGUARD - Build and publish release'
     'link-to-jira': true
 
 'notifications':

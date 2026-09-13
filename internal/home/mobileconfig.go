@@ -139,7 +139,7 @@ func encodeMobileConfig(d *dnsSettings, clientID string) ([]byte, error) {
 
 	payloadID := fmt.Sprintf("%s.%s", dnsSettingsPayloadType, uuid.New())
 	data := &mobileConfig{
-		PayloadDescription: "Adds AdGuard Home to macOS Big Sur and iOS 14 or newer systems",
+		PayloadDescription: "Adds CYGUARD to macOS Big Sur and iOS 14 or newer systems",
 		PayloadDisplayName: dspName,
 		PayloadType:        "Configuration",
 		PayloadScope:       "System",
@@ -152,7 +152,7 @@ func encodeMobileConfig(d *dnsSettings, clientID string) ([]byte, error) {
 			PayloadType:        dnsSettingsPayloadType,
 			PayloadIdentifier:  payloadID,
 			PayloadDisplayName: dspName,
-			PayloadDescription: "Configures device to use AdGuard Home",
+			PayloadDescription: "Configures device to use CYGUARD",
 			PayloadUUID:        strings.ToUpper(uuid.New().String()),
 			PayloadVersion:     1,
 		}},

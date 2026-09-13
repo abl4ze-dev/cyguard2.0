@@ -18,6 +18,17 @@ See also the [v0.107.80 GitHub milestone][ms-v0.107.80].
 NOTE: Add new changes BELOW THIS COMMENT.
 -->
 
+### Added
+
+- CYGUARD 2.0 product identity, dark-first security console navigation,
+  responsive PWA assets, and real-state diagnostics.
+
+### Changed
+
+- User-facing web, setup, authentication, CLI, Windows service, Docker, and
+  release presentation now use CYGUARD branding while compatibility-sensitive
+  API, configuration, module, and service identifiers remain unchanged.
+
 ### Security
 
 - Go version has been updated to prevent the possibility of exploiting the Go vulnerabilities fixed in [1.26.8][go-1.26.8].

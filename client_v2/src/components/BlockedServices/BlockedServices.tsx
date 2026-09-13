@@ -311,7 +311,7 @@ export const BlockedServices = (props: Props) => {
                                             iconSvg={service.icon_svg}
                                             checked={blockedSet().has(service.id)}
                                             disabled={
-                                                isGloballyDisabled() || togglingId() === service.id
+                                                isGloballyDisabled() || togglingId() !== null
                                             }
                                             onChange={handleToggleService}
                                         />

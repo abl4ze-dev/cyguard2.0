@@ -1,6 +1,6 @@
-# AdGuard Home Technical Document
+# CYGUARD Technical Document
 
-The document describes technical details and internal algorithms of AdGuard Home.
+The document describes technical details and internal algorithms of CYGUARD.
 
 Contents:
 * First startup
@@ -314,7 +314,7 @@ Example of version.json data:
 
 	{
 	"version": "v0.95-hotfix",
-	"announcement": "AdGuard Home v0.95-hotfix is now available!",
+	"announcement": "CYGUARD v0.95-hotfix is now available!",
 	"announcement_url": "",
 	"download_windows_amd64": "",
 	"download_windows_386": "",
@@ -344,7 +344,7 @@ Response:
 
 	{
 	"new_version": "v0.95",
-	"announcement": "AdGuard Home v0.95 is now available!",
+	"announcement": "CYGUARD v0.95 is now available!",
 	"announcement_url": "http://...",
 	"can_autoupdate": true
 	}

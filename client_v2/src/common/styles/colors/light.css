@@ -1,24 +1,24 @@
 :root {
     /* Page background */
-    --default-page-background: var(--gray-0);
+    --default-page-background: #f8fafc;
     --hovered-page-background: var(--gray-10);
     --pressed-page-background: var(--gray-20);
-    --page-background-additional: var(--gray-10);
+    --page-background-additional: #f1f5f9;
     --page-background-additional-hovered: var(--gray-20);
     --page-background-additional-pressed: var(--gray-30);
     /* Cards background */
-    --default-cards-background: var(--gray-0);
+    --default-cards-background: #ffffff;
     /* Popup background */
     --default-popup-background: var(--gray-0);
     /* Footer background */
     --default-footer-background: var(--gray-80);
     /* Item divider */
-    --default-item-divider: var(--gray-30);
+    --default-item-divider: #dbe4ef;
     /* Main text */
-    --default-main-text: var(--gray-80);
+    --default-main-text: #0f172a;
     --disabled-main-text: var(--gray-50);
     /* Description text */
-    --default-description-text: var(--gray-70);
+    --default-description-text: #64748b;
     /* Forms */
     --default-labels: var(--gray-70);
     /* Input */
@@ -135,4 +135,24 @@
     --fills-switch-knob-disabled: var(--gray-50);
     /* Logo */
     --default-logo-color: var(--gray-100);
+}
+
+/* CYGUARD light theme uses cool neutral surfaces rather than a dark-theme inversion. */
+:root {
+    --default-page-background: #f8fafc;
+    --hovered-page-background: #f1f5f9;
+    --pressed-page-background: #e2e8f0;
+    --page-background-additional: #f1f5f9;
+    --page-background-additional-hovered: #e2e8f0;
+    --page-background-additional-pressed: #cbd5e1;
+    --default-cards-background: #ffffff;
+    --default-popup-background: #ffffff;
+    --default-item-divider: #dbe4ef;
+    --default-main-text: #0f172a;
+    --disabled-main-text: #94a3b8;
+    --default-description-text: #64748b;
+    --default-labels: #334155;
+    --default-input-background: #f8fafc;
+    --default-inactive-input-stroke: #cbd5e1;
+    --default-active-input-stroke: #1677ff;
 }

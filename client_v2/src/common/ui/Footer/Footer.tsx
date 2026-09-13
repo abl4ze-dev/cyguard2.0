@@ -46,8 +46,6 @@ export const Footer = () => {
     const activeTheme = () => (isLoggedIn() ? currentTheme() : currentThemeLocal());
     const themeLabel = () => themeTranslations()[activeTheme()];
 
-    const getYear = () => new Date().getFullYear();
-
     const getThemeIcon = () => {
         const active = activeTheme();
         if (active === THEMES.auto) return 'theme_auto';
@@ -83,7 +81,9 @@ export const Footer = () => {
         <footer class={s.footer}>
             <div class={s.container}>
                 <div class={s.leftGroup}>
-                    <div class={s.copyright}>&copy; 2018–{getYear()} AdGuard Home</div>
+                    <div class={s.copyright}>
+                        {intl.getMessage('cyguard_platform_description')}
+                    </div>
 
                     <Show when={dashboardState.dnsVersion}>
                         <Show
@@ -108,6 +108,14 @@ export const Footer = () => {
                     </Show>
 
                     <div class={s.links}>
+                        <a
+                            href={REPOSITORY.URL}
+                            class={cn(theme.link.link, theme.link.hoverDecoration)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {intl.getMessage('cyguard_attribution')}
+                        </a>
                         <For each={linksData()}>
                             {({ name, href }) => (
                                 <a

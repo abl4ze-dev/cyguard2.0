@@ -15,6 +15,7 @@ type Props = Omit<
     JSX.TextareaHTMLAttributes<HTMLTextAreaElement>,
     'onChange' | 'onBlur' | 'onInput' | 'onScroll'
 > & {
+    'data-testid'?: string;
     label?: JSX.Element;
     size?: 'small' | 'medium' | 'large';
     errorMessage?: string;
@@ -94,6 +95,7 @@ export const Textarea = (props: Props) => {
                             props.class,
                         )}
                         id={props.id}
+                        data-testid={props['data-testid']}
                         name={props.name}
                         placeholder={props.placeholder}
                         value={props.value as string}
@@ -124,6 +126,7 @@ export const Textarea = (props: Props) => {
                         <textarea
                             class={cn(s.transparentText, props.class)}
                             id={props.id}
+                            data-testid={props['data-testid']}
                             name={props.name}
                             placeholder={props.placeholder}
                             value={props.value as string}

@@ -10,14 +10,12 @@ LABEL \
 	maintainer="AdGuard Team <devteam@adguard.com>" \
 	org.opencontainers.image.authors="AdGuard Team <devteam@adguard.com>" \
 	org.opencontainers.image.created=$BUILD_DATE \
-	org.opencontainers.image.description="Network-wide ads & trackers blocking DNS server" \
+	org.opencontainers.image.description="CYGUARD - Cybersecurity & Privacy Protection" \
 	org.opencontainers.image.documentation="https://github.com/AdguardTeam/AdGuardHome/wiki/" \
 	org.opencontainers.image.licenses="GPL-3.0" \
 	org.opencontainers.image.revision=$VCS_REF \
 	org.opencontainers.image.source="https://github.com/AdguardTeam/AdGuardHome" \
-	org.opencontainers.image.title="AdGuard Home" \
-	org.opencontainers.image.url="https://adguard.com/en/adguard-home/overview.html" \
-	org.opencontainers.image.vendor="AdGuard" \
+	org.opencontainers.image.title="CYGUARD" \
 	org.opencontainers.image.version=$VERSION
 
 # Update certificates.
@@ -33,10 +31,10 @@ ARG TARGETVARIANT
 COPY \
 	--chmod=0755 \
 	--chown=nobody:nogroup \
-	./${DIST_DIR}/docker/AdGuardHome_${TARGETOS}_${TARGETARCH}_${TARGETVARIANT} \
-	/opt/adguardhome/AdGuardHome
+	./${DIST_DIR}/docker/cyguard_${TARGETOS}_${TARGETARCH}_${TARGETVARIANT} \
+	/opt/adguardhome/cyguard
 
-RUN setcap 'cap_net_bind_service=+eip' /opt/adguardhome/AdGuardHome
+RUN setcap 'cap_net_bind_service=+eip' /opt/adguardhome/cyguard
 
 # 53     : TCP, UDP : DNS
 # 67     :      UDP : DHCP (server)
@@ -59,7 +57,7 @@ EXPOSE 53/tcp 53/udp \
 
 WORKDIR /opt/adguardhome/work
 
-ENTRYPOINT ["/opt/adguardhome/AdGuardHome"]
+ENTRYPOINT ["/opt/adguardhome/cyguard"]
 
 CMD [ \
 	"--no-check-update", \

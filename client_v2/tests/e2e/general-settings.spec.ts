@@ -1,16 +1,17 @@
 import { test, expect, type Locator } from '@playwright/test';
-import { execFileSync } from 'child_process';
+import { Resolver } from 'node:dns/promises';
 
 import { login } from '../helpers/login';
 
 const DNS_HOST = '127.0.0.1';
-const DNS_PORT = 5353;
+const DNS_PORT = Number(process.env.E2E_DNS_PORT ?? 5353);
 
-const lookupDomain = (domain: string): string =>
-    execFileSync('nslookup', [`-port=${DNS_PORT}`, domain, DNS_HOST], {
-        encoding: 'utf8',
-        timeout: 15_000,
-    });
+const lookupDomain = async (domain: string): Promise<string> => {
+    const resolver = new Resolver();
+    resolver.setServers([`${DNS_HOST}:${DNS_PORT}`]);
+
+    return JSON.stringify((await resolver.resolve4(domain)).sort());
+};
 
 const setToggleState = async (input: Locator, label: Locator, checked: boolean) => {
     if ((await input.isChecked()) === checked) {
@@ -59,12 +60,12 @@ test.describe('General Settings', () => {
         const browsingSecurityLabel = browsingSecurity.locator('xpath=following-sibling::*[1]');
 
         const initialState = await browsingSecurity.isChecked();
-        const initialResult = lookupDomain('totalvirus.com');
+        const initialResult = await lookupDomain('totalvirus.com');
 
         await setToggleState(browsingSecurity, browsingSecurityLabel, !initialState);
         await expectLookupToChange('totalvirus.com', initialResult);
 
-        const toggledResult = lookupDomain('totalvirus.com');
+        const toggledResult = await lookupDomain('totalvirus.com');
         expect(toggledResult).not.toBe(initialResult);
 
         await setToggleState(browsingSecurity, browsingSecurityLabel, initialState);
@@ -74,16 +75,16 @@ test.describe('General Settings', () => {
     test('should toggle parental control feature and verify DNS changes', async ({ page }) => {
         await page.goto('/#settings');
 
-        const parentalControl = page.locator('#parental');
+        const parentalControl = page.locator('input#parental');
         const parentalControlLabel = parentalControl.locator('xpath=following-sibling::*[1]');
 
         const initialState = await parentalControl.isChecked();
-        const initialResult = lookupDomain('pornhub.com');
+        const initialResult = await lookupDomain('pornhub.com');
 
         await setToggleState(parentalControl, parentalControlLabel, !initialState);
         await expectLookupToChange('pornhub.com', initialResult);
 
-        const toggledResult = lookupDomain('pornhub.com');
+        const toggledResult = await lookupDomain('pornhub.com');
         expect(toggledResult).not.toBe(initialResult);
 
         await setToggleState(parentalControl, parentalControlLabel, initialState);

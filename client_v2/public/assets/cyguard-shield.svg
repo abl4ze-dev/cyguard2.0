@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="CYGUARD shield">
+  <defs><linearGradient id="g" x1="88" y1="64" x2="424" y2="448" gradientUnits="userSpaceOnUse"><stop stop-color="#38BDF8"/><stop offset=".52" stop-color="#1677FF"/><stop offset="1" stop-color="#22D3EE"/></linearGradient></defs>
+  <rect width="512" height="512" rx="112" fill="#05070B"/>
+  <path d="M256 52 420 113v119c0 108-66 190-164 230C158 422 92 340 92 232V113L256 52Z" fill="url(#g)"/>
+  <path d="M325 166a106 106 0 1 0 20 149h-83v-48h131v84c-33 44-82 69-137 69a164 164 0 1 1 117-279l-48 25Z" fill="#05070B"/>
+  <path d="M262 188a70 70 0 1 0 0 138h57v-37h-54a33 33 0 1 1 0-65h82v-36h-85Z" fill="#F8FAFC"/>
+</svg>

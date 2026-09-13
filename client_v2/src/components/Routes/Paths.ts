@@ -4,6 +4,14 @@ const BasicPath = '/';
 const pathBuilder = (path: string) => `${BasicPath}${path}`;
 
 export const RoutePath = {
+    ScanCenter: 'ScanCenter',
+    NetworkActivity: 'NetworkActivity',
+    ThreatProtection: 'ThreatProtection',
+    Devices: 'Devices',
+    Privacy: 'Privacy',
+    Reports: 'Reports',
+    FlaggedSites: 'FlaggedSites',
+    Diagnostics: 'Diagnostics',
     Dashboard: 'Dashboard',
     Logs: 'Logs',
     Guide: 'Guide',
@@ -44,6 +52,14 @@ export type QueryParams = Record<string, string | number | boolean>;
 export const SCROLL_QUERY_KEY = 'section';
 
 export const Paths: Record<RoutePathKey, string> = {
+    ScanCenter: pathBuilder('scan-center'),
+    NetworkActivity: pathBuilder('network-activity'),
+    ThreatProtection: pathBuilder('threat-protection'),
+    Devices: pathBuilder('devices'),
+    Privacy: pathBuilder('privacy'),
+    Reports: pathBuilder('reports'),
+    FlaggedSites: pathBuilder('flagged-sites'),
+    Diagnostics: pathBuilder('diagnostics'),
     Dashboard: pathBuilder('dashboard'),
     Logs: pathBuilder('logs'),
     Guide: pathBuilder('guide'),

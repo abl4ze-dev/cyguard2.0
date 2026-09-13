@@ -394,7 +394,7 @@ func (s *StatsCtx) openDB() (err error) {
 	db, err = bbolt.Open(s.filename, aghos.DefaultPermFile, nil)
 	if err != nil {
 		if err.Error() == "invalid argument" {
-			const lines = `AdGuard Home cannot be initialized due to an incompatible file system.
+			const lines = `CYGUARD cannot be initialized due to an incompatible file system.
 Please read the explanation here: https://github.com/AdguardTeam/AdGuardHome/wiki/Getting-Started#limitations`
 
 			// TODO(s.chzhen):  Use passed context.

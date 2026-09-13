@@ -1,10 +1,15 @@
 .sidebarWrapper {
     display: block;
-    min-width: 240px;
+    min-width: 264px;
 
     @media (min-width: 1200px) {
         align-self: stretch;
-        background-color: var(--page-background-additional);
+        background: linear-gradient(
+            180deg,
+            var(--cyguard-sidebar-start) 0%,
+            var(--cyguard-sidebar-end) 100%
+        );
+        border-right: 1px solid var(--default-item-divider);
     }
 }
 
@@ -18,12 +23,12 @@
         position: sticky;
         top: 0;
         width: 100%;
-        max-width: 240px;
+        max-width: 264px;
         height: 100vh;
-        padding: 16px 0;
+        padding: 18px 0;
         overflow-y: auto;
         z-index: 1;
-        background-color: var(--page-background-additional);
+        background: transparent;
     }
 
     &::-webkit-scrollbar {
@@ -39,23 +44,19 @@
 }
 
 .logo {
-    width: 160px;
-    height: 24px;
+    width: 184px;
+    height: 40px;
 }
 
 .linkWrapper {
     display: flex;
-    padding: 12px 16px 32px;
+    padding: 4px 22px 28px;
 }
 
 .link {
     text-decoration: none;
 }
 
-.logoCompany {
-    fill: var(--default-logo-color);
-}
-
-.logoProduct {
-    fill: var(--default-description-text);
+.logoWordmark {
+    fill: var(--cyguard-sidebar-heading);
 }

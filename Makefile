@@ -35,7 +35,8 @@ RACE = 0
 REVISION = $${REVISION:-$$(git rev-parse --short HEAD)}
 SIGN = 1
 SIGNER_API_KEY = not-a-real-key
-VERSION = v0.0.0
+VERSION = v2.0.0
+VERSION_DOWNLOAD_URL =
 
 NEXTAPI = 0
 
@@ -73,6 +74,7 @@ ENV = env \
 	SIGNER_API_KEY='$(SIGNER_API_KEY)' \
 	VERBOSE="$(VERBOSE.MACRO)" \
 	VERSION="$(VERSION)" \
+	VERSION_DOWNLOAD_URL='$(VERSION_DOWNLOAD_URL)' \
 
 # Keep the line above blank.
 

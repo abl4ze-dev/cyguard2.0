@@ -34,8 +34,9 @@ const DELETE_REWRITE: RewriteEntry = {
 };
 
 const openDnsRewritesPage = async (page: Page) => {
-    await page.goto('/#dns_rewrites');
-    await expect(page.getByText('DNS rewrites', { exact: true })).toBeVisible();
+    await page.goto('/#/dns_rewrites');
+    await expect(page).toHaveURL(/\/#\/dns_rewrites$/);
+    await expect(page.locator('input#rewrite_global_enabled')).toBeAttached();
 };
 
 const listRewrites = async (page: Page): Promise<RewriteEntry[]> => {

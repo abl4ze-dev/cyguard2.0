@@ -403,7 +403,7 @@ func processOptions(
 		if opts.verbose {
 			fmt.Print(version.Verbose(configmigrate.LastSchemaVersion))
 		} else {
-			fmt.Printf("AdGuard Home %s\n", version.Version())
+			fmt.Printf("CYGUARD, version %s\n", version.Version())
 		}
 
 		return osutil.ExitCodeSuccess, true
