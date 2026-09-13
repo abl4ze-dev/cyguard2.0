@@ -36,6 +36,79 @@
               --prefix="./${{ env.CLIENT_DIR }}" \
               run lint \
               ;
+  'WindowsRace':
+    'if': |
+      ${{ github.repository_owner != 'AdGuardSoftwareLimited' }}
+    'permissions':
+      'contents': 'read'
+    'runs-on': 'windows-2022'
+    'steps':
+      - 'uses': 'actions/checkout@v6'
+        'with':
+          'persist-credentials': false
+      - 'uses': 'actions/setup-go@v6'
+        'with':
+          'go-version': '${{ env.GO_VERSION }}'
+      - 'name': 'Configure Windows race toolchain'
+        'shell': 'pwsh'
+        'run': |
+          $ErrorActionPreference = 'Stop'
+
+          $gcc = @(
+              'C:\mingw64\bin\gcc.exe'
+              'C:\msys64\ucrt64\bin\gcc.exe'
+          ) `
+              | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } `
+              | ForEach-Object { Get-Item -LiteralPath $_ } `
+              | Select-Object -First 1
+          if ($null -eq $gcc) {
+              $gcc = Get-ChildItem `
+                  -LiteralPath 'C:\ProgramData\chocolatey\lib\mingw' `
+                  -Filter 'gcc.exe' `
+                  -File `
+                  -Recurse `
+                  -ErrorAction SilentlyContinue `
+                  | Select-Object -First 1
+          }
+          if ($null -eq $gcc) {
+              $gcc = Get-Command 'gcc.exe' -ErrorAction SilentlyContinue
+          }
+          if ($null -eq $gcc) {
+              throw 'The Windows runner does not provide a MinGW GCC compiler.'
+          }
+
+          $gccPath = if ($gcc -is [System.IO.FileInfo]) {
+              $gcc.FullName
+          } else {
+              $gcc.Source
+          }
+          $gccDir = Split-Path -Parent $gccPath
+          $gccDir | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          'CC=gcc' | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          $env:Path = "$gccDir;$env:Path"
+          $env:CC = 'gcc'
+          $env:CGO_ENABLED = '1'
+
+          $windows = Get-CimInstance 'Win32_OperatingSystem'
+          Write-Output "Windows: $($windows.Caption) $($windows.Version) build $($windows.BuildNumber)"
+          go version
+          gcc --version
+          go env CGO_ENABLED CC GOOS GOARCH
+      - 'name': 'Run complete Go race suite'
+        'env':
+          'CGO_ENABLED': '1'
+          'CC': 'gcc'
+        'shell': 'pwsh'
+        'run': |
+          go test -race ./...
+      - 'name': 'Verify TestServerRace explicitly'
+        'if': 'always()'
+        'env':
+          'CGO_ENABLED': '1'
+          'CC': 'gcc'
+        'shell': 'pwsh'
+        'run': |
+          go test -race ./internal/dnsforward -run '^TestServerRace$' -count=1 -v
   'TestJob':
     'if': |
       ${{ github.repository_owner != 'AdGuardSoftwareLimited' }}
